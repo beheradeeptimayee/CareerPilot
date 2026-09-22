@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+
+{% block title %}
+CareerPilot | Email Verification
+{% endblock %}
+
+{% block content %}
+
+<section class="verification-page">
+
+    <div class="verification-card">
+
+        {% if status == 'success' %}
+
+            <div class="verification-icon success-icon">
+                ✓
+            </div>
+
+            <h1>Email Verified!</h1>
+
+            <p class="verification-message">
+                Your email address has been successfully verified.
+                Your CareerPilot account is now active.
+            </p>
+
+            {% if user %}
+                <p class="verification-user">
+                    Welcome to CareerPilot, <strong>{{ user.first_name }}</strong>!
+                </p>
+            {% endif %}
+
+            <a href="{% url 'home' %}" class="verification-btn">
+                Continue to CareerPilot →
+            </a>
+
+
+        {% elif status == 'expired' %}
+
+            <div class="verification-icon expired-icon">
+                !
+            </div>
+
+            <h1>Verification Link Expired</h1>
+
+            <p class="verification-message">
+                This email verification link has expired.
+                Verification links are valid for only 1 hour.
+            </p>
+
+            <a href="{% url 'register' %}" class="verification-btn">
+                Return to Registration
+            </a>
+
+
+        {% elif status == 'used' %}
+
+            <div class="verification-icon used-icon">
+                ✓
+            </div>
+
+            <h1>Already Verified</h1>
+
+            <p class="verification-message">
+                This verification link has already been used.
+                Your email address has already been verified.
+            </p>
+
+            <a href="{% url 'home' %}" class="verification-btn">
+                Go to CareerPilot →
+            </a>
+
+
+        {% else %}
+
+            <div class="verification-icon invalid-icon">
+                ×
+            </div>
+
+            <h1>Invalid Verification Link</h1>
+
+            <p class="verification-message">
+                This verification link is invalid or no longer exists.
+                Please make sure you are using the correct link from
+                your CareerPilot email.
+            </p>
+
+            <a href="{% url 'register' %}" class="verification-btn">
+                Return to Registration
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}

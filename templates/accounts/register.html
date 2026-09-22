@@ -1,0 +1,568 @@
+{% extends 'base.html' %}
+
+{% block title %}
+CareerPilot | Create Account
+{% endblock %}
+
+{% block content %}
+
+<section class="register-page">
+
+    <!-- Left Side -->
+    <div class="register-intro">
+
+        <p class="register-subtitle">
+            JOIN CAREERPILOT
+        </p>
+
+        <h1>
+            Create Your Account
+            and Start Your
+            <span>Career Journey</span>
+        </h1>
+
+        <p class="register-description">
+            Get personalized career guidance, skill assessments,
+            curated learning paths and industry-recognized
+            certificates — all in one place.
+        </p>
+
+        <div class="register-features">
+
+            <div class="register-feature">
+
+                <div class="register-feature-icon">
+                    📊
+                </div>
+
+                <div>
+                    <h3>Personalized Learning Paths</h3>
+                    <p>
+                        Recommendations based on your goals.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="register-feature">
+
+                <div class="register-feature-icon">
+                    🎯
+                </div>
+
+                <div>
+                    <h3>Understand Your Strengths</h3>
+                    <p>
+                        AI-powered skill assessments.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="register-feature">
+
+                <div class="register-feature-icon">
+                    📚
+                </div>
+
+                <div>
+                    <h3>Learn In-Demand Skills</h3>
+                    <p>
+                        Curated courses and resources.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="register-feature">
+
+                <div class="register-feature-icon">
+                    🏆
+                </div>
+
+                <div>
+                    <h3>Earn Certificates</h3>
+                    <p>
+                        Showcase your progress and achievements.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Right Side -->
+    <div class="register-card">
+
+        <h2>Create Your Account</h2>
+
+        <p class="register-card-description">
+            Join CareerPilot and take the first step towards
+            a brighter future.
+        </p>
+
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- Form Level Errors -->
+
+            {% if form.non_field_errors %}
+
+                <div class="form-error">
+
+                    {{ form.non_field_errors }}
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- Full Name + Username -->
+
+            <div class="form-row">
+
+                <!-- Full Name -->
+
+                <div class="form-group">
+
+                    <label for="full_name">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="full_name"
+                        name="full_name"
+                        placeholder="Enter your full name"
+                        value="{{ form.full_name.value|default:'' }}"
+                    >
+
+                    {% if form.full_name.errors %}
+
+                        <div class="field-error">
+                            {{ form.full_name.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Username -->
+
+                <div class="form-group">
+
+                    <label for="username">
+                        Username
+                    </label>
+
+                    <input
+                        type="text"
+                        id="username"
+                        name="username"
+                        placeholder="Choose a username"
+                        value="{{ form.username.value|default:'' }}"
+                    >
+
+                    {% if form.username.errors %}
+
+                        <div class="field-error">
+                            {{ form.username.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Email + Phone -->
+
+            <div class="form-row">
+
+                <!-- Email -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="Enter your email address"
+                        value="{{ form.email.value|default:'' }}"
+                    >
+
+                    {% if form.email.errors %}
+
+                        <div class="field-error">
+                            {{ form.email.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Phone -->
+
+                <div class="form-group">
+
+                    <label for="phone">
+                        Phone Number
+                        <span>(Optional)</span>
+                    </label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        placeholder="Enter your phone number"
+                        value="{{ form.phone.value|default:'' }}"
+                    >
+
+                    {% if form.phone.errors %}
+
+                        <div class="field-error">
+                            {{ form.phone.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Password + Confirm Password -->
+
+            <div class="form-row">
+
+                <!-- Password -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        name="password"
+                        placeholder="Create a password"
+                    >
+
+                    {% if form.password.errors %}
+
+                        <div class="field-error">
+                            {{ form.password.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Confirm Password -->
+
+                <div class="form-group">
+
+                    <label for="confirm_password">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirm_password"
+                        name="confirm_password"
+                        placeholder="Confirm your password"
+                    >
+
+                    {% if form.confirm_password.errors %}
+
+                        <div class="field-error">
+                            {{ form.confirm_password.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Terms -->
+
+            <div class="terms">
+
+                <input
+                    type="checkbox"
+                    id="terms"
+                    name="terms"
+                    {% if form.terms.value %}checked{% endif %}
+                >
+
+                <label for="terms">
+
+                    I agree to the
+
+                    <a href="#">
+                        Terms of Service
+                    </a>
+
+                    and
+
+                    <a href="#">
+                        Privacy Policy
+                    </a>
+
+                </label>
+
+            </div>
+
+
+            {% if form.terms.errors %}
+
+                <div class="field-error terms-error">
+                    {{ form.terms.errors }}
+                </div>
+
+            {% endif %}
+
+
+            <!-- Create Account Button -->
+
+            <button
+                type="submit"
+                class="register-submit"
+            >
+                Create Account →
+            </button>
+
+
+            <!-- Divider -->
+
+            <div class="register-divider">
+
+                <span>OR</span>
+
+            </div>
+
+
+            <!-- Social Registration -->
+
+            <div class="social-register">
+
+
+                <!-- Google -->
+
+                <button
+                    type="button"
+                    class="social-btn"
+                >
+
+                    <svg
+                        class="social-logo google-logo"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+
+                        <path
+                            fill="#4285F4"
+                            d="M21.35 12.23c0-.79-.07-1.55-.23-2.27H12v4.3h5.24a4.48 4.48 0 0 1-1.94 2.94v2.45h3.14c1.84-1.7 2.91-4.2 2.91-7.42z"
+                        />
+
+                        <path
+                            fill="#34A853"
+                            d="M12 21.5c2.63 0 4.84-.87 6.45-2.35l-3.14-2.45c-.87.58-1.98.92-3.31.92-2.55 0-4.71-1.72-5.49-4.04H3.27v2.53A9.74 9.74 0 0 0 12 21.5z"
+                        />
+
+                        <path
+                            fill="#FBBC05"
+                            d="M6.51 13.58A5.86 5.86 0 0 1 6.2 12c0-.55.1-1.08.31-1.58V7.89H3.27A9.74 9.74 0 0 0 2.25 12c0 1.57.38 3.05 1.02 4.11l3.24-2.53z"
+                        />
+
+                        <path
+                            fill="#EA4335"
+                            d="M12 6.38c1.43 0 2.71.49 3.72 1.45l2.79-2.79C16.84 3.45 14.63 2.5 12 2.5a9.74 9.74 0 0 0-8.73 5.39l3.24 2.53C6.71 8.1 9.45 6.38 12 6.38z"
+                        />
+
+                    </svg>
+
+                    <span>
+                        Continue with Google
+                    </span>
+
+                </button>
+
+
+                <!-- GitHub -->
+
+                <button
+                    type="button"
+                    class="social-btn"
+                >
+
+                    <svg
+                        class="social-logo github-logo"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+
+                        <path
+                            fill="currentColor"
+                            d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.56v-2.17c-3.2.7-3.87-1.35-3.87-1.35-.53-1.33-1.28-1.69-1.28-1.69-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.34.95.1-.74.4-1.24.73-1.52-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.47.11-3.06 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.77.11 3.06.73.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.4-5.25 5.69.41.36.78 1.07.78 2.16v3.2c0 .31.21.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"
+                        />
+
+                    </svg>
+
+                    <span>
+                        Continue with GitHub
+                    </span>
+
+                </button>
+
+            </div>
+
+
+            <!-- Login Link -->
+
+            <p class="login-link">
+
+                Already have an account?
+
+                <a href="#">
+                    Login
+                </a>
+
+            </p>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<!-- Registration Progress -->
+
+<section class="registration-progress">
+
+
+    <!-- Step 1 -->
+
+    <div class="progress-step active">
+
+        <div class="step-number">
+            1
+        </div>
+
+        <div>
+
+            <strong>
+                Create Account
+            </strong>
+
+            <span>
+                Basic Information
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="progress-line"></div>
+
+
+    <!-- Step 2 -->
+
+    <div class="progress-step">
+
+        <div class="step-number">
+            2
+        </div>
+
+        <div>
+
+            <strong>
+                Verify Email
+            </strong>
+
+            <span>
+                Secure Your Account
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="progress-line"></div>
+
+
+    <!-- Step 3 -->
+
+    <div class="progress-step">
+
+        <div class="step-number">
+            3
+        </div>
+
+        <div>
+
+            <strong>
+                Complete Profile
+            </strong>
+
+            <span>
+                Tell Us About You
+            </span>
+
+        </div>
+
+    </div>
+
+
+    <div class="progress-line"></div>
+
+
+    <!-- Step 4 -->
+
+    <div class="progress-step">
+
+        <div class="step-number">
+            4
+        </div>
+
+        <div>
+
+            <strong>
+                Start Learning
+            </strong>
+
+            <span>
+                Your Journey Begins
+            </span>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,0 +1,85 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+     <title>{% block title %}CareerPilot{% endblock %}</title>
+    
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <header>
+        <nav class="navbar">
+
+            <div class="logo">
+                🎓 CareerPilot
+            </div>
+
+            <div class="nav-links">
+                <a href="#">Home</a>
+                <a href="#">Career Paths</a>
+                <a href="#">Assessments</a>
+                <a href="#">Courses</a>
+                <a href="#">Certificates</a>
+                <a href="#">About</a>
+            </div>
+
+            <div class="nav-buttons">
+                <a href="#" class="login-btn">Login</a>
+                <a href="#" class="signup-btn">Sign Up</a>
+            </div>
+
+        </nav>
+    </header>
+
+
+    <!-- Main Page Content -->
+    <main>
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+
+    <!-- Footer -->
+    <footer>
+
+        <div class="footer-content">
+
+            <div>
+                <h2>CareerPilot</h2>
+                <p>Explore • Learn • Grow</p>
+            </div>
+
+            <div>
+                <h3>Quick Links</h3>
+                <p>Home</p>
+                <p>Career Paths</p>
+                <p>Courses</p>
+                <p>Assessments</p>
+            </div>
+
+            <div>
+                <h3>Resources</h3>
+                <p>Career Guide</p>
+                <p>Help Center</p>
+                <p>Contact Us</p>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <p>© 2026 CareerPilot. All rights reserved.</p>
+        </div>
+
+    </footer>
+
+</body>
+</html>
