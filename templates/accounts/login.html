@@ -1,0 +1,273 @@
+{% extends 'base.html' %}
+
+{% block title %}
+CareerPilot | Login
+{% endblock %}
+
+{% block content %}
+
+<section class="login-page">
+
+    <div class="login-container">
+
+        <!-- Left Side -->
+        <div class="login-intro">
+
+            <p class="login-subtitle">
+                WELCOME BACK
+            </p>
+
+            <h1>
+                Continue Your
+                <span>Career Journey</span>
+            </h1>
+
+            <p class="login-description">
+                Sign in to CareerPilot and continue learning,
+                track your progress, explore career paths,
+                and work toward your goals.
+            </p>
+
+            <div class="login-benefits">
+
+                <div class="login-benefit">
+                    <div class="login-benefit-icon">🎯</div>
+                    <div>
+                        <h3>Personalized Learning</h3>
+                        <p>Follow a learning path designed around your goals.</p>
+                    </div>
+                </div>
+
+                <div class="login-benefit">
+                    <div class="login-benefit-icon">📊</div>
+                    <div>
+                        <h3>Track Your Progress</h3>
+                        <p>Monitor your skills, courses, and learning journey.</p>
+                    </div>
+                </div>
+
+                <div class="login-benefit">
+                    <div class="login-benefit-icon">🤖</div>
+                    <div>
+                        <h3>AI-Powered Guidance</h3>
+                        <p>Get personalized guidance throughout your journey.</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Login Card -->
+        <div class="login-card">
+
+            <div class="login-card-header">
+
+                <h2>Sign In</h2>
+
+                <p>
+                    Enter your credentials to continue.
+                </p>
+
+            </div>
+
+
+            {% if messages %}
+
+                {% for message in messages %}
+
+                    <div class="login-message {{ message.tags }}">
+                        {{ message }}
+                    </div>
+
+                {% endfor %}
+
+            {% endif %}
+
+
+            {% if form.non_field_errors %}
+
+                <div class="form-error">
+                    {{ form.non_field_errors }}
+                </div>
+
+            {% endif %}
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <!-- Username / Email -->
+
+                <div class="login-field">
+
+                    <label for="id_username_or_email">
+                        Username or Email
+                    </label>
+
+                    <input
+                        type="text"
+                        name="username_or_email"
+                        id="id_username_or_email"
+                        placeholder="Enter your username or email"
+                        value="{{ form.username_or_email.value|default:'' }}"
+                    >
+
+                    {% if form.username_or_email.errors %}
+
+                        <div class="field-error">
+                            {{ form.username_or_email.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="login-field">
+
+                    <div class="password-label-row">
+
+                        <label for="id_password">
+                            Password
+                        </label>
+
+                        <a href="#">
+                            Forgot Password?
+                        </a>
+
+                    </div>
+
+                    <input
+                        type="password"
+                        name="password"
+                        id="id_password"
+                        placeholder="Enter your password"
+                    >
+
+                    {% if form.password.errors %}
+
+                        <div class="field-error">
+                            {{ form.password.errors }}
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Remember Me -->
+
+                <div class="remember-row">
+
+                    <label class="remember-label">
+
+                        <input
+                            type="checkbox"
+                            name="remember_me"
+                        >
+
+                        <span>Remember me</span>
+
+                    </label>
+
+                </div>
+
+
+                <!-- Login Button -->
+
+                <button
+                    type="submit"
+                    class="login-submit-btn"
+                >
+                    Sign In →
+                </button>
+
+            </form>
+
+
+            <!-- Divider -->
+
+            <div class="login-divider">
+                <span>OR</span>
+            </div>
+
+
+            <!-- Social Login -->
+
+            <div class="social-login">
+
+                <button type="button">
+
+                    <svg
+                        class="social-logo"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <path
+                            fill="#4285F4"
+                            d="M23.49 12.27c0-.79-.07-1.55-.2-2.27H12v4.3h6.44a5.5 5.5 0 0 1-2.39 3.61v3h3.87c2.27-2.09 3.57-5.17 3.57-8.64z"
+                        />
+                        <path
+                            fill="#34A853"
+                            d="M12 24c3.24 0 5.96-1.07 7.95-2.91l-3.87-3c-1.07.72-2.44 1.15-4.08 1.15-3.13 0-5.79-2.11-6.74-4.95H1.26v3.09A12 12 0 0 0 12 24z"
+                        />
+                        <path
+                            fill="#FBBC05"
+                            d="M5.26 14.29A7.2 7.2 0 0 1 4.88 12c0-.8.14-1.57.38-2.29V6.62H1.26A12 12 0 0 0 0 12c0 1.94.46 3.78 1.26 5.38l4-3.09z"
+                        />
+                        <path
+                            fill="#EA4335"
+                            d="M12 4.76c1.76 0 3.34.61 4.59 1.81l3.44-3.44C17.95 1.11 15.24 0 12 0A12 12 0 0 0 1.26 6.62l4 3.09C6.21 6.87 8.87 4.76 12 4.76z"
+                        />
+                    </svg>
+
+                    Continue with Google
+
+                </button>
+
+
+                <button type="button">
+
+                    <svg
+                        class="social-logo github-logo"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                    >
+                        <path
+                            fill="currentColor"
+                            d="M12 .5C5.65.5.5 5.65.5 12c0 5.09 3.29 9.41 7.86 10.94.58.11.79-.25.79-.56v-2.17c-3.2.7-3.88-1.54-3.88-1.54-.53-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.02 1.75 2.68 1.24 3.33.95.1-.74.4-1.24.73-1.53-2.55-.29-5.23-1.28-5.23-5.7 0-1.26.45-2.29 1.18-3.1-.12-.29-.51-1.47.11-3.06 0 0 .97-.31 3.17 1.18a10.9 10.9 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.59.23 2.77.11 3.06.73.81 1.18 1.84 1.18 3.1 0 4.43-2.69 5.4-5.25 5.69.41.35.78 1.05.78 2.12v3.14c0 .31.21.67.8.56A11.51 11.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"
+                        />
+                    </svg>
+
+                    Continue with GitHub
+
+                </button>
+
+            </div>
+
+
+            <!-- Register -->
+
+            <p class="login-register-text">
+
+                Don't have an account?
+
+                <a href="{% url 'register' %}">
+                    Create an account
+                </a>
+
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

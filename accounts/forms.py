@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 
-
+# Registration form
 class RegistrationForm(forms.ModelForm):
 
     full_name = forms.CharField(
@@ -88,3 +88,28 @@ class RegistrationForm(forms.ModelForm):
             'username',
             'email',
         ]
+
+# Login Form
+
+class LoginForm(forms.Form):
+
+    username_or_email = forms.CharField(
+        label='Username or Email',
+        max_length=150,
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                'placeholder': 'Enter your username or email'
+            }
+        )
+    )
+
+    password = forms.CharField(
+        label='Password',
+        required=True,
+        widget=forms.PasswordInput(
+            attrs={
+                'placeholder': 'Enter your password'
+            }
+        )
+    )

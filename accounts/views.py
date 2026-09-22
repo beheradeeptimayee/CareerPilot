@@ -1,12 +1,14 @@
 from django.shortcuts import render,redirect
-from accounts.forms import RegistrationForm
+from accounts.forms import RegistrationForm,LoginForm
 # Create your views here.
 from accounts.models import EmailVerification
 from django.utils import timezone
 from datetime import timedelta
 from django.core.mail import send_mail
 from django.urls import reverse
-
+from django.contrib.auth import authenticate,login,logout
+from django.contrib import messages
+from django.contrib.auth.models import User
 
 def register(request):
 
@@ -140,3 +142,96 @@ def verify_email(request, token):
             'user': user
         }
     )
+
+def login_view(request):
+
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    if request.method == 'POST':
+
+        form = LoginForm(request.POST)
+
+        if form.is_valid():
+
+            username_or_email = form.cleaned_data[
+                'username_or_email'
+            ]
+
+            password = form.cleaned_data['password']
+
+            # Check whether the user entered an email
+            if '@' in username_or_email:
+
+                try:
+                    user_obj = User.objects.get(
+                        email=username_or_email
+                    )
+
+                    username = user_obj.username
+
+                except User.DoesNotExist:
+                    username = username_or_email
+
+            else:
+                username = username_or_email
+
+            # Authenticate the user
+            user = authenticate(
+                request,
+                username=username,
+                password=password
+            )
+
+            if user is not None:
+
+                # Check whether email has been verified
+                if not user.is_active:
+
+                    messages.error(
+                        request,
+                        'Please verify your email address before logging in.'
+                    )
+
+                    return render(
+                        request,
+                        'accounts/login.html',
+                        {'form': form}
+                    )
+
+                # Create login session
+                login(request, user)
+
+                messages.success(
+                    request,
+                    'Welcome back!'
+                )
+
+                return redirect('home')
+
+            else:
+
+                messages.error(
+                    request,
+                    'Invalid username/email or password.'
+                )
+
+    else:
+
+        form = LoginForm()
+
+    return render(
+        request,
+        'accounts/login.html',
+        {'form': form}
+    )
+def logout_view(request):
+
+    logout(request)
+
+    messages.success(
+        request,
+        'You have been logged out successfully.'
+    )
+
+    return redirect('home')
