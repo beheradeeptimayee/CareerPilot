@@ -78,10 +78,11 @@ Django Authentication
 Create Session
      ↓
 Home Page
+
+
 👨‍🎓 Student Profile
-
+---------------------
 Learners will be able to maintain information such as:
-
 Full name
 Email
 Phone number
@@ -89,22 +90,21 @@ Career interests
 Education
 Skills
 Career goals
+
 🧭 Career Exploration
-
+------------------------------
 Learners will be able to:
-
 Explore different career paths
 View career descriptions
 Understand required skills
 Identify skills required for a career
 Compare their current skills with career requirements
 Identify areas that need improvement
+
 📝 Skill Assessment
-
+------------------------
 CareerPilot will provide assessments to evaluate learner skills.
-
 The assessment system will include:
-
 Assessments
 Questions
 Options
@@ -112,22 +112,21 @@ Assessment attempts
 Submitted answers
 Automatic scoring
 Skill-wise results
+
 📊 Skill Gap Analysis
-
+--------------------------
 The platform will analyze assessment results and career requirements to identify:
-
 Existing skills
 Strong skills
 Weak skills
 Missing skills
 Skills required for a selected career
-
 This information will be used to create a personalized learning path.
 
+
 🗺️ Personalized Learning Roadmap
-
+------------------------------------
 CareerPilot will generate personalized learning roadmaps based on:
-
 Career goals
 Assessment results
 Current skills
@@ -147,10 +146,10 @@ PostgreSQL
 Backend Project
    ↓
 Backend Developer
+
 📚 Courses and Learning
-
+--------------------------
 The learning system will support:
-
 Courses
 Modules
 Lessons
@@ -158,15 +157,12 @@ Learning resources
 Quizzes
 Practice activities
 Progress tracking
-
 Learners will be able to follow their personalized roadmap and track their learning progress.
 
 🤖 AI-Powered Guidance
-
+-----------------------
 CareerPilot will integrate AI to provide personalized assistance.
-
 Possible AI features include:
-
 Personalized recommendations
 Career guidance
 Learning explanations
@@ -176,33 +172,31 @@ Learning assistance
 Hybrid AI Approach
 
 Core business rules and objective scoring will be handled by the Django application.
-
 AI will primarily be used for:
-
 Explanations
 Recommendations
 Personalized guidance
 Tutoring
-
 This helps keep important application logic deterministic while using AI where personalization is useful.
 
 🏆 Certificates
-
+-------------------
 CareerPilot will provide certificates to learners who successfully complete eligible courses and/or assessments.
 
 Future certificate features may include:
-
 Certificate generation
 Certificate verification
 Public certificate pages
 QR-based verification
-📱 Future Mobile Application
 
+📱 Future Mobile Application
+----------------------------------
 The backend and REST API architecture will be designed with future mobile development in mind.
 
 The goal is to allow a future mobile application to communicate with the same backend through APIs without rebuilding the entire application.
 
 🛠️ Technology Stack
+---------------------
 Backend
 Python
 Django
@@ -219,8 +213,9 @@ Development Tools
 Git
 GitHub
 Visual Studio Code
-🏗️ Project Architecture
 
+🏗️ Project Architecture
+----------------------------
 CareerPilot follows a Django-based architecture.
 
 CareerPilot/
@@ -261,8 +256,9 @@ CareerPilot/
 ├── manage.py
 ├── requirements.txt
 └── README.md
-🎨 UI Design
 
+🎨 UI Design
+------------------
 CareerPilot uses a Dark Premium visual theme.
 
 Color Palette
@@ -289,8 +285,9 @@ Courses
 Certificates
 Student profile
 AI Tutor
-🔄 Development Methodology
 
+🔄 Development Methodology
+---------------------------
 Each major CareerPilot feature will follow this development process:
 
 GUI / Visualization
@@ -312,7 +309,9 @@ GitHub
 This approach helps make the project easier to understand, develop, test, maintain, and extend.
 
 🗂️ Development Progress
+-------------------------
 Phase 0 — Project Foundation
+--------------------------------
  Django project created
  Existing deepti virtual environment configured
  PostgreSQL configured
@@ -326,8 +325,10 @@ Phase 0 — Project Foundation
  Home page created
  Git initialized
  GitHub repository connected
+
 Phase 1 — Authentication
-Completed
+-------------------------------
+COMPLETED:
  Registration UI
  Registration form
  Password hashing
@@ -340,15 +341,19 @@ Completed
  Login with email
  Django session authentication
  Login testing
-Pending
+
+**Pending**
+---------
  Dynamic authenticated navbar
  Logout
  Forgot password
  Google authentication
  GitHub authentication
  Remember Me functionality
+
 📊 Planned Development Phases
 Phase 2 — Student Profile
+-----------------------
  Student profile model
  Profile creation
  Profile editing
@@ -356,14 +361,18 @@ Phase 2 — Student Profile
  Skills
  Education details
  Career goals
+
 Phase 3 — Career Catalog
+---------------------
  Career model
  Career categories
  Skill catalog
  Career-skill mapping
  Career listing
  Career detail page
+
 Phase 4 — Assessments
+---------------------
  Assessment model
  Questions
  Options
@@ -372,13 +381,17 @@ Phase 4 — Assessments
  Automatic scoring
  Skill-wise results
  Skill gap analysis
+
 Phase 5 — Personalized Roadmap
+------------------------------
  Roadmap model
  Roadmap generation
  Skill-based learning paths
  Career-based recommendations
  Roadmap progress tracking
+
 Phase 6 — Courses and Learning
+--------------------------------
  Courses
  Modules
  Lessons
@@ -386,21 +399,27 @@ Phase 6 — Courses and Learning
  Quizzes
  Practice activities
  Progress tracking
+
 Phase 7 — AI Features
+------------------
  AI Tutor
  AI learning explanations
  Personalized recommendations
  AI career guidance
  AI learning assistance
  AI-powered study support
+
 Phase 8 — Certificates
+------------------------
  Certificate model
  Certificate eligibility
  Certificate generation
  Certificate dashboard
  Certificate verification
  QR-based verification
+
 Phase 9 — REST API
+--------------------
  API architecture
  Authentication APIs
  Career APIs
@@ -408,7 +427,9 @@ Phase 9 — REST API
  Course APIs
  Progress APIs
  Certificate APIs
+
 Phase 10 — Future Mobile Architecture
+--------------------------
  Mobile-ready API architecture
  Mobile authentication
  Mobile dashboard
@@ -416,9 +437,10 @@ Phase 10 — Future Mobile Architecture
  Mobile assessments
  Mobile learning experience
  Mobile certificates
+
 🚀 Getting Started
 Prerequisites
-
+---------------
 Make sure the following are installed:
 
 Python
