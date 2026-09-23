@@ -1,0 +1,454 @@
+{% extends 'base.html' %}
+
+{% block title %}
+CareerPilot | My Profile
+{% endblock %}
+
+
+{% block content %}
+
+<section class="profile-page">
+
+    <div class="profile-container">
+
+
+        <!-- =========================
+             PROFILE HEADER
+        ========================== -->
+
+        <div class="profile-header">
+
+            <div>
+
+                <p class="profile-subtitle">
+                    CAREERPILOT PROFILE
+                </p>
+
+                <h1>
+                    My Profile
+                </h1>
+
+                <p class="profile-description">
+                    Keep your information updated to personalize
+                    your CareerPilot learning journey.
+                </p>
+
+            </div>
+
+
+            <div class="profile-user-card">
+
+                <div class="profile-avatar">
+                    {{ user.first_name|default:user.username|first|upper }}
+                </div>
+
+                <div>
+
+                    <h3>
+                        {{ user.first_name|default:user.username }}
+                    </h3>
+
+                    <p>
+                        {{ user.email }}
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             MESSAGES
+        ========================== -->
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="profile-message {{ message.tags }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+
+        <!-- =========================
+             PROFILE FORM
+        ========================== -->
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+
+            <!-- Personal Information -->
+
+            <div class="profile-section">
+
+                <div class="profile-section-header">
+
+                    <div class="profile-section-icon">
+                        👤
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Personal Information
+                        </h2>
+
+                        <p>
+                            Basic information about you.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-grid">
+
+                    <div class="profile-field">
+
+                        <label>
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            value="{{ user.get_full_name|default:user.username }}"
+                            disabled
+                        >
+
+                        <small>
+                            Managed through your account.
+                        </small>
+
+                    </div>
+
+
+                    <div class="profile-field">
+
+                        <label>
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            value="{{ user.email }}"
+                            disabled
+                        >
+
+                        <small>
+                            Your verified account email.
+                        </small>
+
+                    </div>
+
+
+                    <div class="profile-field">
+
+                        <label for="{{ form.phone.id_for_label }}">
+                            Phone Number
+                        </label>
+
+                        {{ form.phone }}
+
+                        {% if form.phone.errors %}
+                            <div class="field-error">
+                                {{ form.phone.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-field">
+
+                        <label for="{{ form.date_of_birth.id_for_label }}">
+                            Date of Birth
+                        </label>
+
+                        {{ form.date_of_birth }}
+
+                        {% if form.date_of_birth.errors %}
+                            <div class="field-error">
+                                {{ form.date_of_birth.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-field full-width">
+
+                        <label for="{{ form.location.id_for_label }}">
+                            Location
+                        </label>
+
+                        {{ form.location }}
+
+                        {% if form.location.errors %}
+                            <div class="field-error">
+                                {{ form.location.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Education -->
+
+            <div class="profile-section">
+
+                <div class="profile-section-header">
+
+                    <div class="profile-section-icon">
+                        🎓
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Education
+                        </h2>
+
+                        <p>
+                            Tell us about your educational background.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-grid">
+
+                    <div class="profile-field">
+
+                        <label for="{{ form.college.id_for_label }}">
+                            College / University
+                        </label>
+
+                        {{ form.college }}
+
+                        {% if form.college.errors %}
+                            <div class="field-error">
+                                {{ form.college.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-field">
+
+                        <label for="{{ form.degree.id_for_label }}">
+                            Degree
+                        </label>
+
+                        {{ form.degree }}
+
+                        {% if form.degree.errors %}
+                            <div class="field-error">
+                                {{ form.degree.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-field">
+
+                        <label for="{{ form.year_of_passing.id_for_label }}">
+                            Year of Passing
+                        </label>
+
+                        {{ form.year_of_passing }}
+
+                        {% if form.year_of_passing.errors %}
+                            <div class="field-error">
+                                {{ form.year_of_passing.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-field">
+
+                        <label for="{{ form.cgpa.id_for_label }}">
+                            CGPA
+                        </label>
+
+                        {{ form.cgpa }}
+
+                        {% if form.cgpa.errors %}
+                            <div class="field-error">
+                                {{ form.cgpa.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Career Information -->
+
+            <div class="profile-section">
+
+                <div class="profile-section-header">
+
+                    <div class="profile-section-icon">
+                        🎯
+                    </div>
+
+                    <div>
+
+                        <h2>
+                            Career Information
+                        </h2>
+
+                        <p>
+                            Help CareerPilot understand your career goals.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="profile-grid">
+
+                    <div class="profile-field full-width">
+
+                        <label for="{{ form.career_goal.id_for_label }}">
+                            Career Goal
+                        </label>
+
+                        {{ form.career_goal }}
+
+                        {% if form.career_goal.errors %}
+                            <div class="field-error">
+                                {{ form.career_goal.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-field">
+
+                        <label for="{{ form.preferred_job_role.id_for_label }}">
+                            Preferred Job Role
+                        </label>
+
+                        {{ form.preferred_job_role }}
+
+                        {% if form.preferred_job_role.errors %}
+                            <div class="field-error">
+                                {{ form.preferred_job_role.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-field">
+
+                        <label for="{{ form.preferred_location.id_for_label }}">
+                            Preferred Location
+                        </label>
+
+                        {{ form.preferred_location }}
+
+                        {% if form.preferred_location.errors %}
+                            <div class="field-error">
+                                {{ form.preferred_location.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-field full-width">
+
+                        <label for="{{ form.areas_of_interest.id_for_label }}">
+                            Areas of Interest
+                        </label>
+
+                        {{ form.areas_of_interest }}
+
+                        {% if form.areas_of_interest.errors %}
+                            <div class="field-error">
+                                {{ form.areas_of_interest.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-field full-width">
+
+                        <label for="{{ form.skills.id_for_label }}">
+                            Skills
+                        </label>
+
+                        {{ form.skills }}
+
+                        {% if form.skills.errors %}
+                            <div class="field-error">
+                                {{ form.skills.errors }}
+                            </div>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="profile-checkbox">
+
+                        {{ form.willing_to_relocate }}
+
+                        <label for="{{ form.willing_to_relocate.id_for_label }}">
+                            I am willing to relocate for suitable opportunities.
+                        </label>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Save Button -->
+
+            <div class="profile-actions">
+
+                <button
+                    type="submit"
+                    class="profile-save-btn"
+                >
+                    Save Profile →
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from accounts.forms import RegistrationForm,LoginForm
+from accounts.forms import RegistrationForm,LoginForm,ProfileForm
 # Create your views here.
 from accounts.models import EmailVerification
 from django.utils import timezone
@@ -235,3 +235,42 @@ def logout_view(request):
     )
 
     return redirect('home')
+
+def profile_view(request):
+
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    profile = request.user.student_profile
+
+    if request.method == 'POST':
+
+        form = ProfileForm(
+            request.POST,
+            instance=profile
+        )
+
+        if form.is_valid():
+
+            form.save()
+
+            messages.success(
+                request,
+                'Your profile has been updated successfully.'
+            )
+
+            return redirect('profile')
+
+    else:
+
+        form = ProfileForm(
+            instance=profile
+        )
+
+    return render(
+        request,
+        'accounts/profile.html',
+        {
+            'form': form
+        }
+    )

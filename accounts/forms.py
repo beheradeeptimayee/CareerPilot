@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
+from accounts.models import StudentProfile
 
 # Registration form
 class RegistrationForm(forms.ModelForm):
@@ -113,3 +114,105 @@ class LoginForm(forms.Form):
             }
         )
     )
+
+class ProfileForm(forms.ModelForm):
+
+    class Meta:
+
+        model = StudentProfile
+
+        fields = [
+            'phone',
+            'date_of_birth',
+            'location',
+            'college',
+            'degree',
+            'year_of_passing',
+            'cgpa',
+            'career_goal',
+            'areas_of_interest',
+            'skills',
+            'preferred_job_role',
+            'preferred_location',
+            'willing_to_relocate',
+        ]
+
+        widgets = {
+
+            'phone': forms.TextInput(
+                attrs={
+                    'placeholder': 'Enter your phone number'
+                }
+            ),
+
+            'date_of_birth': forms.DateInput(
+                attrs={
+                    'type': 'date'
+                }
+            ),
+
+            'location': forms.TextInput(
+                attrs={
+                    'placeholder': 'Enter your location'
+                }
+            ),
+
+            'college': forms.TextInput(
+                attrs={
+                    'placeholder': 'Enter your college or university'
+                }
+            ),
+
+            'degree': forms.TextInput(
+                attrs={
+                    'placeholder': 'Example: B.Tech Computer Science'
+                }
+            ),
+
+            'year_of_passing': forms.NumberInput(
+                attrs={
+                    'placeholder': 'Example: 2025'
+                }
+            ),
+
+            'cgpa': forms.NumberInput(
+                attrs={
+                    'placeholder': 'Example: 8.60',
+                    'step': '0.01'
+                }
+            ),
+
+            'career_goal': forms.TextInput(
+                attrs={
+                    'placeholder': 'Example: Python Backend Developer'
+                }
+            ),
+
+            'areas_of_interest': forms.Textarea(
+                attrs={
+                    'placeholder': 'Example: Backend Development, APIs, AI',
+                    'rows': 3
+                }
+            ),
+
+            'skills': forms.Textarea(
+                attrs={
+                    'placeholder': 'Example: Python, Django, SQL, PostgreSQL',
+                    'rows': 3
+                }
+            ),
+
+            'preferred_job_role': forms.TextInput(
+                attrs={
+                    'placeholder': 'Example: Backend Developer'
+                }
+            ),
+
+            'preferred_location': forms.TextInput(
+                attrs={
+                    'placeholder': 'Example: Bengaluru'
+                }
+            ),
+
+            'willing_to_relocate': forms.CheckboxInput()
+        }
