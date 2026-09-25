@@ -1,0 +1,357 @@
+{% extends 'base.html' %}
+
+{% block title %}CareerPilot | Career Paths{% endblock %}
+
+{% block content %}
+
+<section class="career-page">
+
+    <!-- Hero Section -->
+    <div class="career-hero">
+
+        <span class="career-eyebrow">
+            EXPLORE YOUR FUTURE
+        </span>
+
+        <h1>Career Paths</h1>
+
+        <p>
+            Discover career opportunities, explore the skills you need,
+            and find a learning path that matches your goals.
+        </p>
+
+    </div>
+
+
+    <!-- Search -->
+    <div class="career-search-wrapper">
+
+        <div class="career-search">
+
+            <span class="search-icon">⌕</span>
+
+            <input
+                type="text"
+                id="careerSearch"
+                placeholder="Search careers..."
+                autocomplete="off"
+            >
+
+        </div>
+
+    </div>
+
+
+    <!-- Category Filters -->
+    <div class="career-filters">
+
+        <button
+            class="career-filter active"
+            data-category="all"
+        >
+            All
+        </button>
+
+        <button
+            class="career-filter"
+            data-category="Software Development"
+        >
+            Software Development
+        </button>
+
+        <button
+            class="career-filter"
+            data-category="Web Development"
+        >
+            Web Development
+        </button>
+
+        <button
+            class="career-filter"
+            data-category="Data & Analytics"
+        >
+            Data & Analytics
+        </button>
+
+        <button
+            class="career-filter"
+            data-category="Artificial Intelligence"
+        >
+            Artificial Intelligence
+        </button>
+
+        <button
+            class="career-filter"
+            data-category="Cloud & DevOps"
+        >
+            Cloud & DevOps
+        </button>
+
+        <button
+            class="career-filter"
+            data-category="Cybersecurity"
+        >
+            Cybersecurity
+        </button>
+
+        <button
+            class="career-filter"
+            data-category="Software Testing"
+        >
+            Software Testing
+        </button>
+
+    </div>
+
+
+    <!-- Career Count -->
+    <div class="career-results-header">
+
+        <div>
+            <span class="career-results-label">
+                CAREER PATHS
+            </span>
+
+            <h2>
+                Explore your possibilities
+            </h2>
+        </div>
+
+        <span
+            class="career-count"
+            id="careerCount"
+        >
+            {{ careers|length }} Careers
+        </span>
+
+    </div>
+
+
+    <!-- Career Cards -->
+    <div class="career-grid" id="careerGrid">
+
+        {% for career in careers %}
+
+        <article
+            class="career-card"
+            data-name="{{ career.name|lower }}"
+            data-category="{{ career.category.name }}"
+        >
+
+            <!-- Card Header -->
+            <div class="career-card-header">
+
+                <div class="career-icon">
+                    {{ career.icon }}
+                </div>
+
+                <span class="career-category">
+                    {{ career.category.name }}
+                </span>
+
+            </div>
+
+
+            <!-- Career Information -->
+            <div class="career-card-body">
+
+                <h3>
+                    {{ career.name }}
+                </h3>
+
+                <p>
+                    {{ career.description }}
+                </p>
+
+
+                <!-- Skills -->
+                <div class="career-skills">
+
+                    {% for skill in career.skills.all|slice:":4" %}
+
+                    <span class="skill-tag">
+                        {{ skill.name }}
+                    </span>
+
+                    {% endfor %}
+
+                    {% if career.skills.count > 4 %}
+
+                    <span class="skill-more">
+                        +{{ career.skills.count|add:"-4" }} more
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Card Footer -->
+            <div class="career-card-footer">
+
+                <a
+                    href="{% url 'career_detail' career.slug %}"
+                    class="career-view-btn"
+                >
+                    View Career
+                    <span>→</span>
+                </a>
+
+            </div>
+
+        </article>
+
+        {% empty %}
+
+        <div class="career-empty">
+
+            <div class="career-empty-icon">
+                🔍
+            </div>
+
+            <h3>No career paths available</h3>
+
+            <p>
+                Career paths will appear here once they are added.
+            </p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- No Search Results -->
+    <div
+        class="career-no-results"
+        id="careerNoResults"
+        style="display: none;"
+    >
+
+        <div class="career-empty-icon">
+            🔎
+        </div>
+
+        <h3>No matching careers</h3>
+
+        <p>
+            Try searching for another career or choose a different category.
+        </p>
+
+    </div>
+
+</section>
+
+
+<script>
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    const searchInput = document.getElementById('careerSearch');
+
+    const filterButtons = document.querySelectorAll('.career-filter');
+
+    const careerCards = document.querySelectorAll('.career-card');
+
+    const careerCount = document.getElementById('careerCount');
+
+    const noResults = document.getElementById('careerNoResults');
+
+    let selectedCategory = 'all';
+
+
+    function filterCareers() {
+
+        const searchTerm = searchInput.value
+            .toLowerCase()
+            .trim();
+
+        let visibleCount = 0;
+
+
+        careerCards.forEach(function (card) {
+
+            const careerName = card.dataset.name;
+
+            const category = card.dataset.category;
+
+
+            const matchesSearch =
+                careerName.includes(searchTerm);
+
+
+            const matchesCategory =
+                selectedCategory === 'all' ||
+                category === selectedCategory;
+
+
+            if (matchesSearch && matchesCategory) {
+
+                card.style.display = 'flex';
+
+                visibleCount++;
+
+            } else {
+
+                card.style.display = 'none';
+
+            }
+
+        });
+
+
+        careerCount.textContent =
+            visibleCount + (visibleCount === 1 ? ' Career' : ' Careers');
+
+
+        if (visibleCount === 0) {
+
+            noResults.style.display = 'block';
+
+        } else {
+
+            noResults.style.display = 'none';
+
+        }
+
+    }
+
+
+    searchInput.addEventListener(
+        'input',
+        filterCareers
+    );
+
+
+    filterButtons.forEach(function (button) {
+
+        button.addEventListener('click', function () {
+
+            filterButtons.forEach(function (btn) {
+
+                btn.classList.remove('active');
+
+            });
+
+
+            this.classList.add('active');
+
+
+            selectedCategory =
+                this.dataset.category;
+
+
+            filterCareers();
+
+        });
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

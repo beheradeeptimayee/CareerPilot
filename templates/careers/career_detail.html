@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+
+{% block title %}CareerPilot | {{ career.name }}{% endblock %}
+
+{% block content %}
+
+<section class="career-detail-page">
+
+    <!-- Back -->
+    <a href="{% url 'career_list' %}" class="career-back-link">
+        ← Back to Career Paths
+    </a>
+
+
+    <!-- Career Hero -->
+    <div class="career-detail-hero">
+
+        <div class="career-detail-icon">
+            {{ career.icon }}
+        </div>
+
+        <div class="career-detail-heading">
+
+            <span class="career-detail-category">
+                {{ career.category.name }}
+            </span>
+
+            <h1>{{ career.name }}</h1>
+
+            <p>
+                {{ career.description }}
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- Career Information -->
+    <div class="career-detail-layout">
+
+        <!-- Main Content -->
+        <div class="career-detail-main">
+
+            <div class="career-detail-section">
+
+                <span class="career-section-label">
+                    CAREER OVERVIEW
+                </span>
+
+                <h2>About this career</h2>
+
+                <p>
+                    {{ career.description }}
+                </p>
+
+                <p>
+                    This career requires a combination of technical
+                    knowledge, problem-solving ability, and practical
+                    experience. The required skills below can be used
+                    to understand the foundation needed for this career.
+                </p>
+
+            </div>
+
+
+            <!-- Skills -->
+            <div class="career-detail-section">
+
+                <span class="career-section-label">
+                    REQUIRED SKILLS
+                </span>
+
+                <h2>Skills you'll need</h2>
+
+                <div class="career-detail-skills">
+
+                    {% for skill in career.skills.all %}
+
+                    <div class="career-skill-card">
+
+                        <div class="career-skill-icon">
+                            ✓
+                        </div>
+
+                        <div class="career-skill-content">
+
+                            <h3>
+                                {{ skill.name }}
+                            </h3>
+
+                            {% if skill.description %}
+
+                            <p>
+                                {{ skill.description }}
+                            </p>
+
+                            {% endif %}
+
+                        </div>
+
+                        <span class="required-badge">
+                            Required
+                        </span>
+
+                    </div>
+
+                    {% empty %}
+
+                    <p class="no-skills">
+                        No skills have been assigned to this career yet.
+                    </p>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Sidebar -->
+        <aside class="career-detail-sidebar">
+
+            <div class="career-info-card">
+
+                <span class="career-section-label">
+                    CAREER INFORMATION
+                </span>
+
+                <h3>Career Overview</h3>
+
+
+                <div class="career-info-item">
+
+                    <span class="career-info-label">
+                        Category
+                    </span>
+
+                    <span class="career-info-value">
+                        {{ career.category.name }}
+                    </span>
+
+                </div>
+
+
+                <div class="career-info-item">
+
+                    <span class="career-info-label">
+                        Required Skills
+                    </span>
+
+                    <span class="career-info-value">
+                        {{ career.skills.count }}
+                    </span>
+
+                </div>
+
+
+                <div class="career-info-item">
+
+                    <span class="career-info-label">
+                        Career Status
+                    </span>
+
+                    <span class="career-status">
+                        Active
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- Assessment CTA -->
+            <div class="career-assessment-card">
+
+                <div class="assessment-icon">
+                    🎯
+                </div>
+
+                <h3>
+                    Ready to discover your skill level?
+                </h3>
+
+                <p>
+                    Take an assessment to identify your strengths
+                    and areas that need improvement.
+                </p>
+
+                <a href="#" class="career-assessment-btn">
+                    Take Assessment
+                    <span>→</span>
+                </a>
+
+                <small>
+                    Assessment feature coming next.
+                </small>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</section>
+
+{% endblock %}
