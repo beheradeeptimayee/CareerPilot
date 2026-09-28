@@ -125,3 +125,46 @@ class AssessmentAnswer(models.Model):
 
     def __str__(self):
         return f'{self.attempt.user.username} - Question {self.question.id}'
+
+
+class AIEvaluation(models.Model):
+
+    EVALUATION_STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
+        ('COMPLETED', 'Completed'),
+        ('FAILED', 'Failed'),
+    ]
+
+    answer = models.OneToOneField(AssessmentAnswer,on_delete=models.CASCADE,related_name='ai_evaluation')
+    evaluation_status = models.CharField(max_length=20,choices=EVALUATION_STATUS_CHOICES,default='PENDING')
+    score = models.DecimalField(max_digits=6,decimal_places=2,null=True,blank=True)
+    feedback = models.TextField(blank=True)
+    strengths = models.TextField(blank=True)
+    weaknesses = models.TextField(blank=True)
+    model_name = models.CharField(max_length=100,blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'AI Evaluation - Answer {self.answer.id}'
+
+class SkillResult(models.Model):
+
+    attempt = models.ForeignKey(AssessmentAttempt,on_delete=models.CASCADE,related_name='skill_results')
+    skill = models.ForeignKey(Skill,on_delete=models.CASCADE,related_name='assessment_results')
+    score = models.DecimalField(max_digits=6,decimal_places=2,default=0)
+    proficiency_level = models.CharField(max_length=50)
+    questions_attempted = models.PositiveIntegerField(default=0)
+    questions_correct = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.attempt.user.username} - {self.skill.name}'
+
+class ProficiencyLevel(models.Model):
+
+    name = models.CharField(max_length=50,unique=True)
+    minimum_score = models.DecimalField(max_digits=5,decimal_places=2)
+    maximum_score = models.DecimalField(max_digits=5,decimal_places=2)
+    description = models.TextField(blank=True)
+
+    def __str__(self):
+        return self.name

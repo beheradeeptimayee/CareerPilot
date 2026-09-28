@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="assessment-page">
+
+    <div class="assessment-container">
+
+        <span class="assessment-label">
+            QUESTION
+        </span>
+
+        <h1>
+            {{ attempt.assessment.title }}
+        </h1>
+
+        <div class="assessment-question-card">
+
+            <p class="question-number">
+                Question {{ question.order }}
+            </p>
+
+            <h2>
+                {{ question.question_text }}
+            </h2>
+
+            <form method="post">
+
+                {% csrf_token %}
+
+                <div class="question-options">
+
+                    {% for option in question.options.all %}
+
+                        <label class="question-option">
+
+                            <input
+                                type="radio"
+                                name="selected_option"
+                                value="{{ option.id }}"
+                                required
+                            >
+
+                            <span>
+                                {{ option.option_text }}
+                            </span>
+
+                        </label>
+
+                    {% endfor %}
+
+                </div>
+
+                <div class="question-action">
+
+                    <button
+                        type="submit"
+                        class="assessment-start-btn"
+                    >
+                        Next
+                        <span>→</span>
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

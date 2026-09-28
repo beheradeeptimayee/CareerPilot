@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="assessment-page">
+
+    <div class="assessment-container">
+
+        <span class="assessment-label">
+            ASSESSMENT
+        </span>
+
+        <h1>
+            {{ assessment.title }}
+        </h1>
+
+        <p class="assessment-description">
+            {{ assessment.description }}
+        </p>
+
+        <div class="assessment-info-grid">
+
+            <div class="assessment-info-card">
+                <span>Questions</span>
+                <strong>
+                    {{ assessment.blueprints.first.total_questions }}
+                </strong>
+            </div>
+
+            <div class="assessment-info-card">
+                <span>Duration</span>
+                <strong>
+                    {{ assessment.duration_minutes }} min
+                </strong>
+            </div>
+
+            <div class="assessment-info-card">
+                <span>Skills</span>
+                <strong>
+                    {{ assessment.blueprints.first.blueprint_skills.count }}
+                </strong>
+            </div>
+
+        </div>
+
+        <div class="assessment-section">
+
+            <h2>Skills Covered</h2>
+
+            <div class="skill-tags">
+
+                {% for blueprint_skill in assessment.blueprints.first.blueprint_skills.all %}
+
+                    <span class="skill-tag">
+                        {{ blueprint_skill.skill.name }}
+                    </span>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <div class="assessment-instructions">
+
+            <h2>Before You Begin</h2>
+
+            <ul>
+                <li>Answer each question carefully.</li>
+                <li>Your assessment evaluates multiple skills.</li>
+                <li>Your results will show skill-wise performance.</li>
+                <li>Your assessment may adapt based on your responses.</li>
+            </ul>
+
+        </div>
+
+        <div class="assessment-action">
+
+            <a
+                href="{% url 'start_assessment' career_slug=assessment.career.slug %}"
+                class="assessment-start-btn"
+            >
+                Start Assessment
+                <span>→</span>
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

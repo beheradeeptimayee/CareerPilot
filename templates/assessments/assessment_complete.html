@@ -1,0 +1,498 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<div class="results-page">
+
+    <!-- Header -->
+    <div class="results-container">
+
+        <div class="results-header">
+
+            <div>
+                <span class="results-label">
+                    ASSESSMENT RESULTS
+                </span>
+
+                <h1>
+                    Assessment Completed 🎉
+                </h1>
+
+                <p>
+                    Here is your performance summary for
+                    <strong>{{ attempt.assessment.title }}</strong>.
+                </p>
+            </div>
+
+        </div>
+
+
+        <!-- Overall Score -->
+        <div class="overall-result-card">
+
+            <div class="overall-score-section">
+
+                <span class="result-card-label">
+                    OVERALL SCORE
+                </span>
+
+                <div class="overall-score">
+                    {{ score|floatformat:0 }}%
+                </div>
+
+                <p>
+                    Keep learning and improving your skills.
+                </p>
+
+            </div>
+
+
+            <div class="overall-stats">
+
+                <div class="result-stat">
+
+                    <span>
+                        Questions
+                    </span>
+
+                    <strong>
+                        {{ total_questions }}
+                    </strong>
+
+                </div>
+
+
+                <div class="result-stat">
+
+                    <span>
+                        Correct Answers
+                    </span>
+
+                    <strong>
+                        {{ correct_answers }}
+                    </strong>
+
+                </div>
+
+
+                <div class="result-stat">
+
+                    <span>
+                        Assessment
+                    </span>
+
+                    <strong>
+                        Completed
+                    </strong>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Skill Performance -->
+        <section class="results-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="section-label">
+                        PERFORMANCE
+                    </span>
+
+                    <h2>
+                        Skill-wise Performance
+                    </h2>
+                </div>
+
+                <p>
+                    See how you performed across the skills tested.
+                </p>
+
+            </div>
+
+
+            <div class="skill-results-grid">
+
+                {% for result in skill_results %}
+
+                    <div class="result-skill-card">
+
+                        <div class="result-skill-top">
+
+                            <div>
+
+                                <h3>
+                                    {{ result.skill.name }}
+                                </h3>
+
+                                <span class="skill-attempted">
+                                    {{ result.questions_correct }}
+                                    /
+                                    {{ result.questions_attempted }}
+                                    correct
+                                </span>
+
+                            </div>
+
+
+                            <div class="skill-score">
+
+                                <strong>
+                                    {{ result.score|floatformat:0 }}%
+                                </strong>
+
+                                <span>
+                                    {{ result.proficiency_level.name }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="result-progress">
+
+                           <div
+                                class="result-progress-fill"
+                                data-score="{{ result.score }}"
+                             ></div> 
+
+                        </div>
+
+
+                        <div class="skill-result-description">
+
+                            {% if result.score >= 70 %}
+
+                                <span class="result-status strong-status">
+                                    Strong performance
+                                </span>
+
+                            {% elif result.score >= 50 %}
+
+                                <span class="result-status medium-status">
+                                    Needs more practice
+                                </span>
+
+                            {% else %}
+
+                                <span class="result-status weak-status">
+                                    Needs improvement
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="empty-results">
+
+                        <p>
+                            No skill results are available yet.
+                        </p>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+
+        <!-- Strengths and Improvement -->
+        <section class="results-section">
+
+            <div class="strength-improvement-grid">
+
+
+                <!-- Strong Skills -->
+
+                <div class="insight-card">
+
+                    <div class="insight-icon">
+                        ✓
+                    </div>
+
+                    <div class="insight-content">
+
+                        <span class="section-label">
+                            YOUR STRENGTHS
+                        </span>
+
+                        <h2>
+                            Strong Skills
+                        </h2>
+
+                        {% if strong_skills %}
+
+                            <div class="insight-list">
+
+                                {% for result in strong_skills %}
+
+                                    <div class="insight-item">
+
+                                        <div>
+                                            <strong>
+                                                {{ result.skill.name }}
+                                            </strong>
+
+                                            <span>
+                                                {{ result.proficiency_level.name }}
+                                            </span>
+                                        </div>
+
+                                        <strong>
+                                            {{ result.score|floatformat:0 }}%
+                                        </strong>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% else %}
+
+                            <p class="insight-empty">
+                                Keep practicing to build strong skills.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+
+                <!-- Improvement Skills -->
+
+                <div class="insight-card">
+
+                    <div class="insight-icon improvement-icon">
+                        ↑
+                    </div>
+
+                    <div class="insight-content">
+
+                        <span class="section-label">
+                            FOCUS AREA
+                        </span>
+
+                        <h2>
+                            Skills to Improve
+                        </h2>
+
+                        {% if improvement_skills %}
+
+                            <div class="insight-list">
+
+                                {% for result in improvement_skills %}
+
+                                    <div class="insight-item">
+
+                                        <div>
+                                            <strong>
+                                                {{ result.skill.name }}
+                                            </strong>
+
+                                            <span>
+                                                {{ result.proficiency_level.name }}
+                                            </span>
+                                        </div>
+
+                                        <strong>
+                                            {{ result.score|floatformat:0 }}%
+                                        </strong>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        {% else %}
+
+                            <p class="insight-empty">
+                                Excellent! No immediate improvement areas.
+                            </p>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Skill Gap -->
+        <section class="results-section">
+
+            <div class="skill-gap-card">
+
+                <div class="skill-gap-content">
+
+                    <span class="section-label">
+                        SKILL GAP ANALYSIS
+                    </span>
+
+                    <h2>
+                        Understand What to Learn Next
+                    </h2>
+
+                    <p>
+                        Your assessment results can help identify the
+                        skills that need more practice and guide your
+                        personalized learning journey.
+                    </p>
+
+                </div>
+
+
+                <div class="skill-gap-visual">
+
+                    <div class="gap-circle">
+
+                        <strong>
+                            {{ score|floatformat:0 }}%
+                        </strong>
+
+                        <span>
+                            Current Level
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Next Steps -->
+        <section class="results-section">
+
+            <div class="section-heading">
+
+                <div>
+                    <span class="section-label">
+                        NEXT STEP
+                    </span>
+
+                    <h2>
+                        Continue Your Career Journey
+                    </h2>
+                </div>
+
+            </div>
+
+
+            <div class="next-steps-grid">
+
+                <div class="next-step-card">
+
+                    <div class="next-step-number">
+                        01
+                    </div>
+
+                    <h3>
+                        Personalized Learning Path
+                    </h3>
+
+                    <p>
+                        Follow a learning path based on your assessment
+                        performance and skill gaps.
+                    </p>
+
+                    <a href="#" class="result-action-link">
+                        View Learning Path →
+                    </a>
+
+                </div>
+
+
+                <div class="next-step-card">
+
+                    <div class="next-step-number">
+                        02
+                    </div>
+
+                    <h3>
+                        Practice Your Skills
+                    </h3>
+
+                    <p>
+                        Strengthen your weaker areas with targeted
+                        lessons, practice questions, and quizzes.
+                    </p>
+
+                    <a href="#" class="result-action-link">
+                        Start Practicing →
+                    </a>
+
+                </div>
+
+
+                <div class="next-step-card">
+
+                    <div class="next-step-number">
+                        03
+                    </div>
+
+                    <h3>
+                        AI Career Guidance
+                    </h3>
+
+                    <p>
+                        Get personalized guidance and recommendations
+                        based on your career goals and performance.
+                    </p>
+
+                    <a href="#" class="result-action-link">
+                        Explore Guidance →
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- Bottom Actions -->
+        <div class="results-actions">
+
+            <a
+                href="{% url 'career_list' %}"
+                class="secondary-result-btn"
+            >
+                Explore Careers
+            </a>
+
+            <a
+                href="{% url 'home' %}"
+                class="primary-result-btn"
+            >
+                Back to Home
+                <span>→</span>
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="{% static 'js/assessment_results.js' %}"></script>
+
+{% endblock %}
