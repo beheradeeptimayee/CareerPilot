@@ -1,0 +1,1356 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    {{ career.name }} | Skill Gap Analysis | CareerPilot
+{% endblock %}
+
+{% block content %}
+
+<style>
+/* =========================================================
+   CAREERPILOT — SKILL GAP DASHBOARD
+   Self-contained page styling
+========================================================= */
+
+.skill-gap-page {
+    --bg: #07111f;
+    --panel: #0d1a2b;
+    --panel-2: #101f33;
+    --panel-3: #14263d;
+    --border: #223854;
+    --border-light: #294463;
+    --purple: #8b5cf6;
+    --purple-light: #a78bfa;
+    --purple-dark: #5b21b6;
+    --blue: #38bdf8;
+    --green: #34d399;
+    --green-bg: rgba(16, 185, 129, .12);
+    --yellow: #fbbf24;
+    --yellow-bg: rgba(245, 158, 11, .12);
+    --red: #fb7185;
+    --red-bg: rgba(244, 63, 94, .12);
+    --white: #f8fafc;
+    --text: #cbd5e1;
+    --muted: #7f91a8;
+
+    width: min(1180px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 34px 0 65px;
+    color: var(--white);
+}
+
+/* HERO */
+.skill-gap-page .sg-hero {
+    position: relative;
+    overflow: hidden;
+    padding: 21px 25px 23px;
+    margin-bottom: 14px;
+    border: 1px solid #263f6f;
+    border-radius: 11px;
+    background:
+        radial-gradient(circle at 87% 48%, rgba(99, 70, 180, .22), transparent 23%),
+        linear-gradient(135deg, #0d1b32 0%, #101d3e 54%, #11183a 100%);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, .18);
+}
+
+.skill-gap-page .sg-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 15px;
+    color: var(--purple-light);
+    font-size: 8px;
+    text-decoration: none;
+}
+
+.skill-gap-page .sg-back:hover {
+    color: white;
+}
+
+.skill-gap-page .sg-hero-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.skill-gap-page .sg-label {
+    display: block;
+    margin-bottom: 6px;
+    color: #9f83ff;
+    font-size: 7px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.skill-gap-page .sg-hero h1 {
+    margin: 0 0 5px;
+    color: #f5f7ff;
+    font-size: 22px;
+    line-height: 1.15;
+    font-weight: 800;
+}
+
+.skill-gap-page .sg-hero-description {
+    max-width: 550px;
+    margin: 0;
+    color: #aab8cb;
+    font-size: 8px;
+    line-height: 1.55;
+}
+
+.skill-gap-page .sg-hero-art {
+    position: relative;
+    width: 230px;
+    height: 74px;
+    flex-shrink: 0;
+}
+
+.skill-gap-page .sg-laptop {
+    position: absolute;
+    right: 40px;
+    bottom: 4px;
+    width: 95px;
+    height: 54px;
+    border: 3px solid #7252e7;
+    border-radius: 5px 5px 2px 2px;
+    background: linear-gradient(145deg, #111d42, #172d58);
+    transform: skew(-8deg);
+    box-shadow: 0 0 25px rgba(124, 58, 237, .25);
+}
+
+.skill-gap-page .sg-laptop::before {
+    content: "</>";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7662f2;
+    font-size: 21px;
+    font-weight: 800;
+    transform: skew(8deg);
+}
+
+.skill-gap-page .sg-laptop::after {
+    content: "";
+    position: absolute;
+    left: -15px;
+    bottom: -9px;
+    width: 120px;
+    height: 8px;
+    border-radius: 50%;
+    background: #6945d8;
+    opacity: .7;
+}
+
+.skill-gap-page .sg-skill-pill {
+    position: absolute;
+    right: 0;
+    padding: 4px 9px;
+    border-radius: 5px;
+    color: #dbeafe;
+    background: rgba(30, 64, 110, .82);
+    border: 1px solid rgba(96, 165, 250, .25);
+    font-size: 7px;
+}
+
+.skill-gap-page .sg-skill-pill:nth-child(2) { top: 0; right: 35px; }
+.skill-gap-page .sg-skill-pill:nth-child(3) { top: 18px; right: 17px; }
+.skill-gap-page .sg-skill-pill:nth-child(4) { top: 36px; right: 2px; }
+.skill-gap-page .sg-skill-pill:nth-child(5) { top: 54px; right: 21px; }
+
+/* SUMMARY */
+.skill-gap-page .sg-summary {
+    display: grid;
+    grid-template-columns: 1.05fr 1fr 1fr;
+    gap: 13px;
+    margin-bottom: 18px;
+}
+
+.skill-gap-page .sg-summary-card {
+    min-height: 68px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: linear-gradient(135deg, #0e1d30, #102238);
+}
+
+.skill-gap-page .sg-summary-card.readiness {
+    border-color: #135c58;
+    background: linear-gradient(135deg, #09282b, #102638);
+}
+
+.skill-gap-page .sg-readiness-ring {
+    --score: 0%;
+    position: relative;
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: conic-gradient(var(--green) var(--score), #20394b 0);
+}
+
+.skill-gap-page .sg-readiness-ring::before {
+    content: "";
+    position: absolute;
+    width: 37px;
+    height: 37px;
+    border-radius: 50%;
+    background: #10282c;
+}
+
+.skill-gap-page .sg-readiness-ring span {
+    position: relative;
+    z-index: 1;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.skill-gap-page .sg-summary-icon {
+    width: 35px;
+    height: 35px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 9px;
+    font-size: 16px;
+}
+
+.skill-gap-page .sg-blue-icon {
+    background: #152b62;
+}
+
+.skill-gap-page .sg-red-icon {
+    background: #421d40;
+}
+
+.skill-gap-page .sg-summary-text {
+    min-width: 0;
+}
+
+.skill-gap-page .sg-summary-text h3 {
+    margin: 0 0 2px;
+    color: #f1f5f9;
+    font-size: 9px;
+    font-weight: 700;
+}
+
+.skill-gap-page .sg-summary-text strong {
+    display: block;
+    margin-bottom: 1px;
+    color: white;
+    font-size: 15px;
+}
+
+.skill-gap-page .sg-summary-text p,
+.skill-gap-page .sg-summary-text small {
+    margin: 0;
+    color: #7f91a8;
+    font-size: 6.5px;
+}
+
+.skill-gap-page .sg-summary-arrow {
+    margin-left: auto;
+    color: #a78bfa;
+    font-size: 15px;
+}
+
+/* SECTIONS */
+.skill-gap-page .sg-section {
+    margin-bottom: 19px;
+}
+
+.skill-gap-page .sg-section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 9px;
+}
+
+.skill-gap-page .sg-section-title {
+    margin: 0 0 2px;
+    color: #f8fafc;
+    font-size: 12px;
+    font-weight: 800;
+}
+
+.skill-gap-page .sg-section-description {
+    margin: 0;
+    color: #7f91a8;
+    font-size: 7px;
+    line-height: 1.4;
+}
+
+.skill-gap-page .sg-section-kicker {
+    display: block;
+    margin-bottom: 3px;
+    color: #a78bfa;
+    font-size: 6px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+}
+
+.skill-gap-page .sg-legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #94a3b8;
+    font-size: 6px;
+}
+
+.skill-gap-page .sg-legend span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.skill-gap-page .sg-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+}
+
+.skill-gap-page .sg-dot.green { background: var(--green); }
+.skill-gap-page .sg-dot.yellow { background: var(--yellow); }
+.skill-gap-page .sg-dot.red { background: var(--red); }
+
+/* PERFORMANCE */
+.skill-gap-page .sg-performance-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.skill-gap-page .sg-performance-card {
+    padding: 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: linear-gradient(135deg, #102034, #102238);
+}
+
+.skill-gap-page .sg-skill-header {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 10px;
+}
+
+.skill-gap-page .sg-skill-icon {
+    width: 31px;
+    height: 31px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 7px;
+    background: #122a50;
+    border: 1px solid #253f61;
+    color: #60a5fa;
+    font-size: 14px;
+}
+
+.skill-gap-page .sg-skill-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.skill-gap-page .sg-skill-name-row {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.skill-gap-page .sg-skill-name {
+    margin: 0;
+    color: #f8fafc;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.skill-gap-page .sg-status {
+    padding: 2px 5px;
+    border-radius: 999px;
+    font-size: 5px;
+    font-weight: 800;
+}
+
+.skill-gap-page .sg-status.strong {
+    color: #4ade80;
+    background: rgba(34, 197, 94, .12);
+}
+
+.skill-gap-page .sg-status.moderate {
+    color: #fbbf24;
+    background: rgba(245, 158, 11, .13);
+}
+
+.skill-gap-page .sg-status.improvement {
+    color: #fb7185;
+    background: rgba(244, 63, 94, .12);
+}
+
+.skill-gap-page .sg-importance {
+    display: block;
+    margin-top: 2px;
+    color: #8b7ce8;
+    font-size: 5px;
+    text-transform: uppercase;
+}
+
+.skill-gap-page .sg-values {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    margin-bottom: 8px;
+}
+
+.skill-gap-page .sg-value {
+    padding: 6px 7px;
+    border-radius: 5px;
+    background: #091626;
+}
+
+.skill-gap-page .sg-value span {
+    display: block;
+    margin-bottom: 1px;
+    color: #65758a;
+    font-size: 5px;
+}
+
+.skill-gap-page .sg-value strong {
+    color: #f8fafc;
+    font-size: 9px;
+}
+
+.skill-gap-page .sg-value strong.good {
+    color: #34d399;
+}
+
+.skill-gap-page .sg-value strong.gap {
+    color: #fb7185;
+}
+
+.skill-gap-page .sg-progress-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.skill-gap-page .sg-progress {
+    height: 5px;
+    flex: 1;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #263a50;
+}
+
+.skill-gap-page .sg-progress-fill {
+    height: 100%;
+    width: var(--progress);
+    border-radius: inherit;
+    background: var(--progress-color, #8b5cf6);
+}
+
+.skill-gap-page .sg-progress-percent {
+    color: #cbd5e1;
+    font-size: 6px;
+}
+
+.skill-gap-page .sg-message {
+    margin-top: 7px;
+    padding: 5px 7px;
+    border-radius: 5px;
+    font-size: 5.5px;
+}
+
+.skill-gap-page .sg-message.success {
+    color: #6ee7b7;
+    background: rgba(16, 185, 129, .09);
+}
+
+.skill-gap-page .sg-message.moderate {
+    color: #fcd34d;
+    background: rgba(245, 158, 11, .09);
+}
+
+.skill-gap-page .sg-message.improvement {
+    color: #fda4af;
+    background: rgba(244, 63, 94, .09);
+}
+
+/* NOT ASSESSED */
+.skill-gap-page .sg-unassessed-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.skill-gap-page .sg-unassessed-card {
+    min-width: 0;
+    padding: 9px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: #0e1d30;
+}
+
+.skill-gap-page .sg-unassessed-top {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.skill-gap-page .sg-unassessed-icon {
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 6px;
+    background: #0a1727;
+    font-size: 12px;
+}
+
+.skill-gap-page .sg-unassessed-name {
+    margin: 0 0 2px;
+    color: #f8fafc;
+    font-size: 7px;
+    font-weight: 700;
+}
+
+.skill-gap-page .sg-badge {
+    display: inline-block;
+    padding: 2px 4px;
+    border-radius: 999px;
+    color: #94a3b8;
+    background: #1d2b3e;
+    font-size: 4.5px;
+}
+
+.skill-gap-page .sg-unassessed-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+    margin-top: 7px;
+    color: #78899e;
+    font-size: 4.5px;
+}
+
+/* FOCUS */
+.skill-gap-page .sg-focus-list {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.skill-gap-page .sg-focus-card {
+    display: grid;
+    grid-template-columns: 22px 31px minmax(0, 1fr) 43px 43px 43px 105px;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 10px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: #102034;
+}
+
+.skill-gap-page .sg-focus-number {
+    width: 21px;
+    height: 21px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    color: #ddd6fe;
+    background: #5b36c5;
+    font-size: 7px;
+    font-weight: 800;
+}
+
+.skill-gap-page .sg-focus-icon {
+    width: 29px;
+    height: 29px;
+    display: grid;
+    place-items: center;
+    border-radius: 6px;
+    background: #132a4c;
+    font-size: 12px;
+}
+
+.skill-gap-page .sg-focus-info {
+    min-width: 0;
+}
+
+.skill-gap-page .sg-focus-title {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 2px;
+}
+
+.skill-gap-page .sg-focus-title h3 {
+    margin: 0;
+    color: #f8fafc;
+    font-size: 8px;
+}
+
+.skill-gap-page .sg-focus-status {
+    padding: 2px 4px;
+    border-radius: 999px;
+    color: #fbbf24;
+    background: rgba(245, 158, 11, .13);
+    font-size: 4.5px;
+    font-weight: 800;
+}
+
+.skill-gap-page .sg-focus-info p {
+    margin: 0;
+    overflow: hidden;
+    color: #78899e;
+    font-size: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.skill-gap-page .sg-focus-stat {
+    text-align: center;
+}
+
+.skill-gap-page .sg-focus-stat span {
+    display: block;
+    margin-bottom: 2px;
+    color: #65758a;
+    font-size: 4.5px;
+}
+
+.skill-gap-page .sg-focus-stat strong {
+    color: #f8fafc;
+    font-size: 8px;
+}
+
+.skill-gap-page .sg-focus-stat.gap strong {
+    color: #fb7185;
+}
+
+.skill-gap-page .sg-learning-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    min-width: 100px;
+    padding: 6px 8px;
+    border: 1px solid #8b5cf6;
+    border-radius: 5px;
+    color: #f8fafc;
+    text-decoration: none;
+    font-size: 5.5px;
+    font-weight: 700;
+}
+
+.skill-gap-page .sg-learning-btn:hover {
+    background: #8b5cf6;
+}
+
+/* CTA */
+.skill-gap-page .sg-learning-path {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    border: 1px solid #5b36c5;
+    border-radius: 9px;
+    background:
+        radial-gradient(circle at 10% 50%, rgba(139, 92, 246, .25), transparent 20%),
+        linear-gradient(135deg, #24165d, #391d75);
+}
+
+.skill-gap-page .sg-cta-icon {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    border-radius: 9px;
+    background: rgba(255,255,255,.10);
+    font-size: 18px;
+}
+
+.skill-gap-page .sg-cta-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.skill-gap-page .sg-cta-content h2 {
+    margin: 0 0 3px;
+    color: white;
+    font-size: 10px;
+}
+
+.skill-gap-page .sg-cta-content p {
+    margin: 0;
+    color: #d8ccff;
+    font-size: 5.5px;
+    line-height: 1.45;
+}
+
+.skill-gap-page .sg-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 11px;
+    border-radius: 6px;
+    color: white;
+    background: #8b5cf6;
+    text-decoration: none;
+    font-size: 6px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.skill-gap-page .sg-cta-btn:hover {
+    background: #a78bfa;
+}
+
+/* EMPTY */
+.skill-gap-page .sg-empty {
+    padding: 25px;
+    border: 1px dashed var(--border-light);
+    border-radius: 8px;
+    text-align: center;
+    color: var(--muted);
+    background: #0d1a2b;
+}
+
+.skill-gap-page .sg-empty h3 {
+    margin: 0 0 4px;
+    color: white;
+    font-size: 11px;
+}
+
+.skill-gap-page .sg-empty p {
+    margin: 0;
+    font-size: 7px;
+}
+
+/* TECHNOLOGY ICONS */
+.skill-gap-page .sg-skill-icon img {
+    width: 20px;
+    height: 20px;
+    display: block;
+    object-fit: contain;
+}
+
+.skill-gap-page .sg-unassessed-icon img {
+    width: 16px;
+    height: 16px;
+    display: block;
+    object-fit: contain;
+}
+
+.skill-gap-page .sg-focus-icon img {
+    width: 18px;
+    height: 18px;
+    display: block;
+    object-fit: contain;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1050px) {
+    .skill-gap-page {
+        width: min(960px, calc(100% - 32px));
+    }
+
+    .skill-gap-page .sg-unassessed-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .skill-gap-page .sg-focus-card {
+        grid-template-columns: 22px 31px minmax(0, 1fr) 43px 43px 43px;
+    }
+
+    .skill-gap-page .sg-learning-btn {
+        grid-column: 1 / -1;
+        justify-self: end;
+    }
+}
+
+@media (max-width: 760px) {
+    .skill-gap-page {
+        width: calc(100% - 24px);
+        padding-top: 20px;
+    }
+
+    .skill-gap-page .sg-hero-content {
+        align-items: flex-start;
+    }
+
+    .skill-gap-page .sg-hero-art {
+        display: none;
+    }
+
+    .skill-gap-page .sg-summary {
+        grid-template-columns: 1fr;
+    }
+
+    .skill-gap-page .sg-performance-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .skill-gap-page .sg-section-head {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .skill-gap-page .sg-unassessed-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .skill-gap-page .sg-focus-card {
+        grid-template-columns: 22px 31px 1fr;
+    }
+
+    .skill-gap-page .sg-focus-stat {
+        text-align: left;
+    }
+
+    .skill-gap-page .sg-learning-btn {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+
+    .skill-gap-page .sg-learning-path {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+
+    .skill-gap-page .sg-cta-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 460px) {
+    .skill-gap-page .sg-unassessed-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .skill-gap-page .sg-values {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+</style>
+
+
+<div class="skill-gap-page">
+
+    <!-- HERO -->
+    <section class="sg-hero">
+
+        <a href="{% url 'career_list' %}" class="sg-back">
+            ← Back to Career
+        </a>
+
+        <div class="sg-hero-content">
+
+            <div>
+                <span class="sg-label">SKILL GAP ANALYSIS</span>
+
+                <h1>{{ career.name }}</h1>
+
+                <p class="sg-hero-description">
+                    Understand your current skills and identify what you
+                    need to improve for your career goal.
+                </p>
+            </div>
+
+            <div class="sg-hero-art">
+                <div class="sg-laptop"></div>
+                <span class="sg-skill-pill">Python</span>
+                <span class="sg-skill-pill">Django</span>
+                <span class="sg-skill-pill">SQL</span>
+                <span class="sg-skill-pill">PostgreSQL</span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- SUMMARY -->
+    <section class="sg-summary">
+
+        <div class="sg-summary-card readiness">
+
+            <div
+                class="sg-readiness-ring"
+                style="--score: {{ overall_readiness|floatformat:0 }}%;"
+            >
+                <span>{{ overall_readiness|floatformat:0 }}%</span>
+            </div>
+
+            <div class="sg-summary-text">
+                <h3>Overall Readiness</h3>
+                <p>Based on your assessed skills</p>
+            </div>
+
+            <span class="sg-summary-arrow">↗</span>
+
+        </div>
+
+
+        <div class="sg-summary-card">
+
+            <div class="sg-summary-icon sg-blue-icon">
+                📊
+            </div>
+
+            <div class="sg-summary-text">
+                <h3>Skills Assessed</h3>
+                <strong>{{ assessed_skills_count }} / {{ skill_gap_data|length }}</strong>
+                <small>Skills you have been tested on</small>
+            </div>
+
+        </div>
+
+
+        <div class="sg-summary-card">
+
+            <div class="sg-summary-icon sg-red-icon">
+                🎯
+            </div>
+
+            <div class="sg-summary-text">
+                <h3>Skills to Focus On</h3>
+                <strong>{{ focus_areas|length }}</strong>
+                <small>Skills below target proficiency</small>
+            </div>
+
+            <span class="sg-summary-arrow">→</span>
+
+        </div>
+
+    </section>
+
+
+    <!-- PERFORMANCE -->
+    <section class="sg-section">
+
+        <div class="sg-section-head">
+
+            <div>
+                <span class="sg-section-kicker">YOUR SKILLS</span>
+
+                <h2 class="sg-section-title">
+                    Your Skill Performance
+                </h2>
+
+                <p class="sg-section-description">
+                    Compare your current proficiency with the target proficiency
+                    for {{ career.name }}.
+                </p>
+            </div>
+
+            <div class="sg-legend">
+                <span><i class="sg-dot green"></i> Strong</span>
+                <span><i class="sg-dot yellow"></i> Moderate</span>
+                <span><i class="sg-dot red"></i> Needs Improvement</span>
+            </div>
+
+        </div>
+
+
+        <div class="sg-performance-grid">
+
+            {% for item in skill_gap_data %}
+
+                {% if item.current_score is not None %}
+
+                    <article class="sg-performance-card">
+
+                        <div class="sg-skill-header">
+
+                            <div class="sg-skill-icon">
+                                {% if item.skill.name == "Python" %}
+                                    <img src="https://cdn.simpleicons.org/python/3776AB" alt="Python">
+                                {% elif item.skill.name == "Django" %}
+                                    <img src="https://cdn.simpleicons.org/django/0C4B33" alt="Django">
+                                {% elif item.skill.name == "SQL" %}
+                                    <img src="https://cdn.simpleicons.org/mysql/4479A1" alt="SQL">
+                                {% elif item.skill.name == "PostgreSQL" %}
+                                    <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="PostgreSQL">
+                                {% elif item.skill.name == "REST APIs" %}
+                                    <img src="https://cdn.simpleicons.org/fastapi/009688" alt="REST APIs">
+                                {% elif item.skill.name == "Git" %}
+                                    <img src="https://cdn.simpleicons.org/git/F05032" alt="Git">
+                                {% elif item.skill.name == "GitHub" %}
+                                    <img src="https://cdn.simpleicons.org/github/F8FAFC" alt="GitHub">
+                                {% else %}
+                                    <span>💻</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="sg-skill-info">
+
+                                <div class="sg-skill-name-row">
+
+                                    <h3 class="sg-skill-name">
+                                        {{ item.skill.name }}
+                                    </h3>
+
+                                    <span class="sg-status
+                                        {% if item.status == 'Strong' %}
+                                            strong
+                                        {% elif item.status == 'Moderate' %}
+                                            moderate
+                                        {% else %}
+                                            improvement
+                                        {% endif %}
+                                    ">
+                                        {{ item.status }}
+                                    </span>
+
+                                </div>
+
+                                <span class="sg-importance">
+                                    {{ item.importance }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="sg-values">
+
+                            <div class="sg-value">
+                                <span>Current</span>
+                                <strong>{{ item.current_score|floatformat:0 }}%</strong>
+                            </div>
+
+                            <div class="sg-value">
+                                <span>Target</span>
+                                <strong>{{ item.target_score|floatformat:0 }}%</strong>
+                            </div>
+
+                            <div class="sg-value">
+                                <span>Gap</span>
+                                <strong class="{% if item.gap == 0 %}good{% else %}gap{% endif %}">
+                                    {{ item.gap|floatformat:0 }}%
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <div class="sg-progress-row">
+
+                            <div
+                                class="sg-progress"
+                                style="--progress: {{ item.current_score }}%;"
+                            >
+                                <div
+                                    class="sg-progress-fill"
+                                    style="
+                                        --progress-color:
+                                        {% if item.status == 'Strong' %}
+                                            #34d399
+                                        {% elif item.status == 'Moderate' %}
+                                            #fbbf24
+                                        {% else %}
+                                            #fb7185
+                                        {% endif %};
+                                    "
+                                ></div>
+                            </div>
+
+                            <span class="sg-progress-percent">
+                                {{ item.current_score|floatformat:0 }}%
+                            </span>
+
+                        </div>
+
+
+                        {% if item.status == 'Strong' %}
+
+                            <div class="sg-message success">
+                                ✓ Great! You have met the target proficiency.
+                            </div>
+
+                        {% elif item.status == 'Moderate' %}
+
+                            <div class="sg-message moderate">
+                                ◈ You're close to the target. Keep practicing to improve.
+                            </div>
+
+                        {% else %}
+
+                            <div class="sg-message improvement">
+                                ⚠ This skill needs more attention.
+                            </div>
+
+                        {% endif %}
+
+                    </article>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- NOT ASSESSED -->
+    <section class="sg-section">
+
+        <div class="sg-section-head">
+
+            <div>
+                <h2 class="sg-section-title">
+                    ⏳ Skills Not Yet Assessed
+                </h2>
+
+                <p class="sg-section-description">
+                    Complete assessments on these skills to get a full skill gap analysis.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="sg-unassessed-grid">
+
+            {% for item in skill_gap_data %}
+
+                {% if item.current_score is None %}
+
+                    <article class="sg-unassessed-card">
+
+                        <div class="sg-unassessed-top">
+
+                            <div class="sg-unassessed-icon">
+
+                                {% if item.skill.name == "SQL" %}
+                                    <img src="https://cdn.simpleicons.org/mysql/4479A1" alt="SQL">
+                                {% elif item.skill.name == "PostgreSQL" %}
+                                    <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="PostgreSQL">
+                                {% elif item.skill.name == "REST APIs" %}
+                                    <img src="https://cdn.simpleicons.org/fastapi/009688" alt="REST APIs">
+                                {% elif item.skill.name == "Git" %}
+                                    <img src="https://cdn.simpleicons.org/git/F05032" alt="Git">
+                                {% elif item.skill.name == "GitHub" %}
+                                    <img src="https://cdn.simpleicons.org/github/F8FAFC" alt="GitHub">
+                                {% else %}
+                                    <span>💻</span>
+                                {% endif %}
+
+                            </div>
+
+                            <div>
+
+                                <h3 class="sg-unassessed-name">
+                                    {{ item.skill.name }}
+                                </h3>
+
+                                <span class="sg-badge">
+                                    Not Assessed
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                        <div class="sg-unassessed-meta">
+                            <span>{{ item.importance }}</span>
+                            <span>Target: {{ item.target_score|floatformat:0 }}%</span>
+                        </div>
+
+                    </article>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- FOCUS AREAS -->
+    <section class="sg-section">
+
+        <div class="sg-section-head">
+
+            <div>
+                <h2 class="sg-section-title">
+                    🎯 What You Should Focus On
+                </h2>
+
+                <p class="sg-section-description">
+                    These skills have the largest gaps from your target proficiency.
+                    Strengthen them to move closer to your career goal.
+                </p>
+            </div>
+
+        </div>
+
+
+        <div class="sg-focus-list">
+
+            {% for item in focus_areas %}
+
+                <article class="sg-focus-card">
+
+                    <div class="sg-focus-number">
+                        {{ forloop.counter }}
+                    </div>
+
+
+                    <div class="sg-focus-icon">
+
+                        {% if item.skill.name == "Python" %}
+                            <img src="https://cdn.simpleicons.org/python/3776AB" alt="Python">
+                        {% elif item.skill.name == "Django" %}
+                            <img src="https://cdn.simpleicons.org/django/0C4B33" alt="Django">
+                        {% elif item.skill.name == "SQL" %}
+                            <img src="https://cdn.simpleicons.org/mysql/4479A1" alt="SQL">
+                        {% elif item.skill.name == "PostgreSQL" %}
+                            <img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="PostgreSQL">
+                        {% elif item.skill.name == "REST APIs" %}
+                            <img src="https://cdn.simpleicons.org/fastapi/009688" alt="REST APIs">
+                        {% elif item.skill.name == "Git" %}
+                            <img src="https://cdn.simpleicons.org/git/F05032" alt="Git">
+                        {% elif item.skill.name == "GitHub" %}
+                            <img src="https://cdn.simpleicons.org/github/F8FAFC" alt="GitHub">
+                        {% else %}
+                            <span>💻</span>
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="sg-focus-info">
+
+                        <div class="sg-focus-title">
+
+                            <h3>
+                                {{ item.skill.name }}
+                            </h3>
+
+                            <span class="sg-focus-status">
+                                {{ item.status }}
+                            </span>
+
+                        </div>
+
+                        <p>
+                            {% if item.skill.name == "Python" %}
+                                Core programming language for backend development.
+                            {% elif item.skill.name == "Django" %}
+                                Framework knowledge is important for backend development.
+                            {% elif item.skill.name == "SQL" %}
+                                Strengthen database querying and data manipulation skills.
+                            {% elif item.skill.name == "PostgreSQL" %}
+                                Improve PostgreSQL database concepts and practical usage.
+                            {% else %}
+                                Strengthen this skill to improve your career readiness.
+                            {% endif %}
+                        </p>
+
+                    </div>
+
+
+                    <div class="sg-focus-stat">
+
+                        <span>Current</span>
+
+                        <strong>
+                            {{ item.current_score|floatformat:0 }}%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="sg-focus-stat">
+
+                        <span>Target</span>
+
+                        <strong>
+                            {{ item.target_score|floatformat:0 }}%
+                        </strong>
+
+                    </div>
+
+
+                    <div class="sg-focus-stat gap">
+
+                        <span>Gap</span>
+
+                        <strong>
+                            {{ item.gap|floatformat:0 }}%
+                        </strong>
+
+                    </div>
+
+
+                    <a href="#" class="sg-learning-btn">
+                        Start Learning →
+                    </a>
+
+                </article>
+
+            {% empty %}
+
+                <div class="sg-empty">
+
+                    <h3>🎉 No Major Skill Gaps</h3>
+
+                    <p>
+                        Your assessed skills currently meet their career targets.
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </section>
+
+
+    <!-- LEARNING PATH -->
+    <section class="sg-learning-path">
+
+        <div class="sg-cta-icon">
+            🚀
+        </div>
+
+        <div class="sg-cta-content">
+
+            <h2>
+                Build Your Personalized Learning Path
+            </h2>
+
+            <p>
+                Use this skill gap analysis to create a learning roadmap tailored
+                to your goal of becoming a {{ career.name }}.
+            </p>
+
+        </div>
+
+        <a href="#" class="sg-cta-btn">
+            Build My Learning Path →
+        </a>
+
+    </section>
+
+</div>
+
+{% endblock %}
