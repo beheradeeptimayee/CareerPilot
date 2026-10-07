@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ attempt.quiz.title }} | CareerPilot
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .quiz-page {
+        min-height: calc(100vh - 140px);
+        background: #0F172A;
+        color: #F8FAFC;
+        padding: 40px;
+    }
+
+    .quiz-container {
+        max-width: 850px;
+        margin: 0 auto;
+    }
+
+    .quiz-header {
+        margin-bottom: 25px;
+    }
+
+    .quiz-header h1 {
+        margin: 0;
+        font-size: 30px;
+    }
+
+    .quiz-progress {
+        color: #94A3B8;
+        margin-top: 8px;
+        font-size: 14px;
+    }
+
+    .question-card {
+        background: #1E293B;
+        border: 1px solid #334155;
+        border-radius: 18px;
+        padding: 30px;
+    }
+
+    .question-number {
+        color: #A78BFA;
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 12px;
+    }
+
+    .question-text {
+        font-size: 21px;
+        line-height: 1.5;
+        margin-bottom: 25px;
+    }
+
+    .options {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .option-label {
+        display: block;
+        padding: 15px 17px;
+        border: 1px solid #334155;
+        border-radius: 11px;
+        background: #0F172A;
+        cursor: pointer;
+        color: #CBD5E1;
+        transition: 0.2s ease;
+    }
+
+    .option-label:hover {
+        border-color: #8B5CF6;
+        background: #312E81;
+    }
+
+    .option-label input {
+        margin-right: 10px;
+    }
+
+    .submit-button {
+        margin-top: 25px;
+        border: none;
+        background: #8B5CF6;
+        color: white;
+        padding: 12px 22px;
+        border-radius: 9px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .submit-button:hover {
+        background: #7C3AED;
+    }
+
+</style>
+
+
+<div class="quiz-page">
+
+    <div class="quiz-container">
+
+        <!-- Quiz Header -->
+
+        <div class="quiz-header">
+
+            <h1>
+                {{ attempt.quiz.title }}
+            </h1>
+
+            <div class="quiz-progress">
+
+                Question
+                {{ answered_count|add:"1" }}
+                of
+                {{ total_questions }}
+
+            </div>
+
+        </div>
+
+
+        <!-- Question Card -->
+
+        <div class="question-card">
+
+            <div class="question-number">
+
+                QUESTION {{ question.order }}
+
+            </div>
+
+
+            <div class="question-text">
+
+                {{ question.question_text }}
+
+            </div>
+
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+
+                <div class="options">
+
+                    {% for option in question.options.all %}
+
+                        <label class="option-label">
+
+                            <input
+                                type="radio"
+                                name="selected_option"
+                                value="{{ option.id }}"
+                                required
+                            >
+
+                            {{ option.option_text }}
+
+                        </label>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="submit-button"
+                >
+                    Submit Answer →
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

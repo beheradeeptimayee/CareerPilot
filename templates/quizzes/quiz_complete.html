@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Quiz Result | CareerPilot
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .result-page {
+        min-height: calc(100vh - 140px);
+        background: #0F172A;
+        color: #F8FAFC;
+        padding: 50px 40px;
+    }
+
+    .result-container {
+        max-width: 650px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+    .result-card {
+        background: #1E293B;
+        border: 1px solid #334155;
+        border-radius: 20px;
+        padding: 45px;
+    }
+
+    .result-icon {
+        font-size: 50px;
+        margin-bottom: 15px;
+    }
+
+    .result-card h1 {
+        margin: 0;
+        font-size: 30px;
+    }
+
+    .result-score {
+        font-size: 52px;
+        font-weight: 700;
+        color: #A78BFA;
+        margin: 25px 0 10px;
+    }
+
+    .result-status {
+        color: #CBD5E1;
+        font-size: 16px;
+        margin-bottom: 30px;
+    }
+
+    .passed {
+        color: #34D399;
+    }
+
+    .failed {
+        color: #FB7185;
+    }
+
+    .result-button {
+        display: inline-block;
+        text-decoration: none;
+        background: #8B5CF6;
+        color: white;
+        padding: 12px 20px;
+        border-radius: 9px;
+        font-weight: 600;
+    }
+
+    .result-button:hover {
+        background: #7C3AED;
+    }
+
+</style>
+
+
+<div class="result-page">
+
+    <div class="result-container">
+
+        <div class="result-card">
+
+
+            {% if passed %}
+
+                <div class="result-icon">
+                    🎉
+                </div>
+
+                <h1>
+                    Quiz Passed!
+                </h1>
+
+                <div class="result-score">
+                    {{ score|floatformat:0 }}%
+                </div>
+
+                <div class="result-status passed">
+                    Great job! Your module has been completed.
+                </div>
+
+
+            {% else %}
+
+                <div class="result-icon">
+                    📚
+                </div>
+
+                <h1>
+                    Keep Practicing
+                </h1>
+
+                <div class="result-score">
+                    {{ score|floatformat:0 }}%
+                </div>
+
+                <div class="result-status failed">
+                    You didn't reach the passing score yet.
+                </div>
+
+            {% endif %}
+
+
+            <a
+                href="{% url 'skill_learning' attempt.quiz.module.roadmap_skill.roadmap.career.slug attempt.quiz.module.roadmap_skill.skill.id %}"
+                class="result-button"
+            >
+                Back to Learning Modules
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

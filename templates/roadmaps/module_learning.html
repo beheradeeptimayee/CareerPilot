@@ -66,6 +66,7 @@
         display: flex;
         gap: 12px;
         margin-top: 20px;
+        flex-wrap: wrap;
     }
 
     .meta-badge {
@@ -114,6 +115,13 @@
         border-top: 1px solid #334155;
     }
 
+    .action-row {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
     .complete-button {
         border: none;
         background: #8B5CF6;
@@ -123,10 +131,22 @@
         font-size: 14px;
         font-weight: 600;
         cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
     }
 
     .complete-button:hover {
         background: #7C3AED;
+    }
+
+    .quiz-button {
+        background: #334155;
+        border: 1px solid #475569;
+    }
+
+    .quiz-button:hover {
+        background: #475569;
+        border-color: #8B5CF6;
     }
 
     .completed-message {
@@ -140,6 +160,12 @@
         font-weight: 600;
     }
 
+    .quiz-info {
+        margin-top: 18px;
+        color: #94A3B8;
+        font-size: 13px;
+    }
+
 </style>
 
 
@@ -147,6 +173,7 @@
 
     <div class="module-container">
 
+        <!-- Back -->
         <a
             href="{% url 'skill_learning' career.slug roadmap_skill.skill.id %}"
             class="module-back"
@@ -155,6 +182,7 @@
         </a>
 
 
+        <!-- Module Header -->
         <section class="module-header">
 
             <div class="module-breadcrumb">
@@ -192,11 +220,26 @@
                     {{ module.get_difficulty_display }}
                 </span>
 
+                {% if progress.status == 'COMPLETED' %}
+
+                    <span class="meta-badge">
+                        ✓ Completed
+                    </span>
+
+                {% else %}
+
+                    <span class="meta-badge">
+                        📖 In Progress
+                    </span>
+
+                {% endif %}
+
             </div>
 
         </section>
 
 
+        <!-- Lesson Content -->
         <section class="lesson-card">
 
             <h2>
@@ -220,9 +263,12 @@
                     </p>
 
                     <div class="learning-note">
+
                         💡 <strong>CareerPilot Tip:</strong>
+
                         Focus on understanding the concepts rather than
                         memorizing syntax.
+
                     </div>
 
                     <p>
@@ -244,9 +290,13 @@
                     </p>
 
                     <div class="learning-note">
-                        💡 More detailed learning content will be added
+
+                        💡 <strong>CareerPilot Tip:</strong>
+
+                        More detailed learning content will be added
                         to this module as the CareerPilot learning system
                         is expanded.
+
                     </div>
 
                 {% endif %}
@@ -254,28 +304,57 @@
             </div>
 
 
+            <!-- Module Actions -->
             <div class="complete-section">
 
-                {% if progress.status == 'COMPLETED' %}
+                <div class="action-row">
 
-                    <span class="completed-message">
-                        ✓ Module Completed
-                    </span>
+                    {% if progress.status == 'COMPLETED' %}
 
-                {% else %}
+                        <span class="completed-message">
+                            ✓ Module Completed
+                        </span>
 
-                    <form method="POST">
+                    {% else %}
 
-                        {% csrf_token %}
+                        <form method="POST">
 
-                        <button
-                            type="submit"
-                            class="complete-button"
+                            {% csrf_token %}
+
+                            <button
+                                type="submit"
+                                class="complete-button"
+                            >
+                                ✓ Mark Module as Complete
+                            </button>
+
+                        </form>
+
+                    {% endif %}
+
+
+                    {% if module.quiz %}
+
+                        <a
+                            href="{% url 'quiz_start' module.quiz.id %}"
+                            class="complete-button quiz-button"
                         >
-                            ✓ Mark Module as Complete
-                        </button>
+                            📝 Take Quiz →
+                        </a>
 
-                    </form>
+                    {% endif %}
+
+                </div>
+
+
+                {% if module.quiz %}
+
+                    <div class="quiz-info">
+
+                        📝 This module has a quiz.
+                        Complete the quiz to test your understanding.
+
+                    </div>
 
                 {% endif %}
 
