@@ -1,0 +1,446 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ roadmap_skill.skill.name }} Learning | CareerPilot
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .learning-page {
+        min-height: calc(100vh - 140px);
+        background: #0F172A;
+        color: #F8FAFC;
+        padding: 35px 40px 60px;
+    }
+
+    .learning-container {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    /* BACK BUTTON */
+
+    .learning-back {
+        display: inline-block;
+        color: #94A3B8;
+        text-decoration: none;
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    .learning-back:hover {
+        color: #A78BFA;
+    }
+
+    /* HERO */
+
+    .learning-hero {
+        background: #1E293B;
+        border: 1px solid #334155;
+        border-radius: 20px;
+        padding: 35px;
+        margin-bottom: 30px;
+    }
+
+    .learning-breadcrumb {
+        color: #94A3B8;
+        font-size: 13px;
+        margin-bottom: 15px;
+    }
+
+    .learning-breadcrumb span {
+        color: #A78BFA;
+        margin: 0 6px;
+    }
+
+    .learning-hero h1 {
+        margin: 0;
+        font-size: 36px;
+        font-weight: 700;
+    }
+
+    .learning-hero p {
+        color: #CBD5E1;
+        margin: 10px 0 25px;
+        line-height: 1.6;
+    }
+
+    /* PROGRESS */
+
+    .learning-progress-info {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+    .learning-progress-info span:first-child {
+        color: #94A3B8;
+    }
+
+    .learning-progress-info span:last-child {
+        color: #A78BFA;
+        font-weight: 600;
+    }
+
+    .learning-progress-track {
+        height: 9px;
+        background: #0F172A;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .learning-progress-fill {
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        #8B5CF6,
+        #A78BFA
+    );
+    border-radius: 20px;
+    }
+
+    /* MODULE HEADER */
+
+    .modules-heading {
+        margin: 30px 0 18px;
+    }
+
+    .modules-heading h2 {
+        margin: 0;
+        font-size: 24px;
+    }
+
+    .modules-heading p {
+        color: #94A3B8;
+        margin-top: 6px;
+        font-size: 14px;
+    }
+
+    /* MODULE LIST */
+
+    .modules-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    /* MODULE CARD */
+
+    .module-card {
+        background: #1E293B;
+        border: 1px solid #334155;
+        border-radius: 16px;
+        padding: 22px;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        gap: 20px;
+
+        transition: 0.2s ease;
+    }
+
+    .module-card:hover {
+        border-color: #8B5CF6;
+        transform: translateY(-2px);
+    }
+
+    /* LEFT SIDE */
+
+    .module-left {
+        display: flex;
+        align-items: flex-start;
+        gap: 16px;
+        min-width: 0;
+    }
+
+    /* MODULE NUMBER */
+
+    .module-number {
+        width: 42px;
+        height: 42px;
+
+        flex-shrink: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: #312E81;
+        color: #C4B5FD;
+
+        border-radius: 11px;
+
+        font-weight: 700;
+    }
+
+    /* MODULE INFORMATION */
+
+    .module-info h3 {
+        margin: 0;
+        font-size: 17px;
+    }
+
+    .module-description {
+        color: #94A3B8;
+        font-size: 13px;
+        line-height: 1.5;
+        margin: 7px 0;
+    }
+
+    /* META */
+
+    .module-meta {
+        display: flex;
+        gap: 12px;
+
+        color: #64748B;
+
+        font-size: 12px;
+    }
+
+    /* START BUTTON */
+
+    .module-action {
+        text-decoration: none;
+        white-space: nowrap;
+
+        padding: 10px 16px;
+
+        border-radius: 9px;
+
+        background: #8B5CF6;
+        color: #FFFFFF;
+
+        font-size: 13px;
+        font-weight: 600;
+
+        transition: 0.2s ease;
+    }
+
+    .module-action:hover {
+        background: #7C3AED;
+        color: #FFFFFF;
+    }
+
+    /* EMPTY STATE */
+
+    .empty-modules {
+        background: #1E293B;
+        border: 1px solid #334155;
+
+        border-radius: 16px;
+
+        padding: 45px;
+
+        text-align: center;
+    }
+
+    .empty-modules h3 {
+        margin-bottom: 8px;
+    }
+
+    .empty-modules p {
+        color: #94A3B8;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 700px) {
+
+        .learning-page {
+            padding: 25px 18px 45px;
+        }
+
+        .learning-hero {
+            padding: 25px;
+        }
+
+        .learning-hero h1 {
+            font-size: 29px;
+        }
+
+        .module-card {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .module-action {
+            width: 100%;
+            text-align: center;
+        }
+
+    }
+
+</style>
+
+
+<div class="learning-page">
+
+    <div class="learning-container">
+
+        <!-- BACK -->
+
+        <a
+            href="{% url 'roadmap_dashboard' career.slug %}"
+            class="learning-back"
+        >
+            ← Back to Learning Roadmap
+        </a>
+
+
+        <!-- HERO -->
+
+        <section class="learning-hero">
+
+            <div class="learning-breadcrumb">
+
+                {{ career.name }}
+
+                <span>›</span>
+
+                Learning
+
+                <span>›</span>
+
+                {{ roadmap_skill.skill.name }}
+
+            </div>
+
+
+            <h1>
+                {{ roadmap_skill.skill.name }}
+            </h1>
+
+
+            <p>
+                Build your {{ roadmap_skill.skill.name }}
+                skills step by step through this personalized
+                learning path.
+            </p>
+
+
+            <!-- PROGRESS -->
+
+            <div class="learning-progress-info">
+
+                <span>
+                    Learning Progress
+                </span>
+
+                <span>
+                    {{ roadmap_skill.progress|floatformat:0 }}%
+                </span>
+
+            </div>
+
+
+            <div class="learning-progress-track">
+
+                <div
+                    class="learning-progress-fill" style="width: {{ roadmap_skill.progress }}%;"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <!-- MODULE HEADING -->
+
+        <div class="modules-heading">
+
+            <h2>
+                Learning Modules
+            </h2>
+
+            <p>
+                Complete each module to improve your
+                {{ roadmap_skill.skill.name }} skills.
+            </p>
+
+        </div>
+
+
+        <!-- MODULES -->
+
+        <div class="modules-list">
+
+            {% for module in modules %}
+
+                <div class="module-card">
+
+                    <div class="module-left">
+
+                        <div class="module-number">
+                            {{ forloop.counter }}
+                        </div>
+
+
+                        <div class="module-info">
+
+                            <h3>
+                                {{ module.title }}
+                            </h3>
+
+
+                            <div class="module-description">
+                                {{ module.description }}
+                            </div>
+
+
+                            <div class="module-meta">
+
+                                <span>
+                                    ⏱ {{ module.estimated_minutes }} min
+                                </span>
+
+                                <span>
+                                    {{ module.get_difficulty_display }}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TEMPORARY BUTTON -->
+
+                    <a
+                        href="{% url 'module_learning' career.slug roadmap_skill.skill.id module.id %}"
+                        class="module-action"
+                    >
+                        Start Learning →
+                    </a>
+
+                </div>
+
+            {% empty %}
+
+                <div class="empty-modules">
+
+                    <h3>
+                        No Learning Modules
+                    </h3>
+
+                    <p>
+                        Modules haven't been created for this skill yet.
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

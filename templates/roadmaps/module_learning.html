@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ module.title }} | CareerPilot
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .module-page {
+        min-height: calc(100vh - 140px);
+        background: #0F172A;
+        color: #F8FAFC;
+        padding: 35px 40px 60px;
+    }
+
+    .module-container {
+        max-width: 950px;
+        margin: 0 auto;
+    }
+
+    .module-back {
+        display: inline-block;
+        color: #94A3B8;
+        text-decoration: none;
+        font-size: 14px;
+        margin-bottom: 25px;
+    }
+
+    .module-back:hover {
+        color: #A78BFA;
+    }
+
+    .module-header {
+        background: #1E293B;
+        border: 1px solid #334155;
+        border-radius: 18px;
+        padding: 32px;
+        margin-bottom: 22px;
+    }
+
+    .module-breadcrumb {
+        color: #94A3B8;
+        font-size: 13px;
+        margin-bottom: 15px;
+    }
+
+    .module-breadcrumb span {
+        color: #A78BFA;
+        margin: 0 5px;
+    }
+
+    .module-header h1 {
+        margin: 0;
+        font-size: 32px;
+    }
+
+    .module-description {
+        color: #CBD5E1;
+        line-height: 1.7;
+        margin-top: 12px;
+    }
+
+    .module-meta {
+        display: flex;
+        gap: 12px;
+        margin-top: 20px;
+    }
+
+    .meta-badge {
+        background: #0F172A;
+        border: 1px solid #334155;
+        color: #CBD5E1;
+        padding: 7px 12px;
+        border-radius: 8px;
+        font-size: 12px;
+    }
+
+    .lesson-card {
+        background: #1E293B;
+        border: 1px solid #334155;
+        border-radius: 18px;
+        padding: 32px;
+    }
+
+    .lesson-card h2 {
+        margin-top: 0;
+        font-size: 22px;
+    }
+
+    .lesson-content {
+        color: #CBD5E1;
+        line-height: 1.8;
+        font-size: 15px;
+    }
+
+    .lesson-content p {
+        margin-bottom: 18px;
+    }
+
+    .learning-note {
+        background: #0F172A;
+        border-left: 3px solid #8B5CF6;
+        padding: 16px;
+        margin: 25px 0;
+        color: #CBD5E1;
+        border-radius: 8px;
+    }
+
+    .complete-section {
+        margin-top: 30px;
+        padding-top: 25px;
+        border-top: 1px solid #334155;
+    }
+
+    .complete-button {
+        border: none;
+        background: #8B5CF6;
+        color: #FFFFFF;
+        padding: 12px 20px;
+        border-radius: 9px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .complete-button:hover {
+        background: #7C3AED;
+    }
+
+    .completed-message {
+        display: inline-block;
+        background: rgba(16, 185, 129, 0.12);
+        border: 1px solid rgba(16, 185, 129, 0.3);
+        color: #34D399;
+        padding: 10px 15px;
+        border-radius: 9px;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+</style>
+
+
+<div class="module-page">
+
+    <div class="module-container">
+
+        <a
+            href="{% url 'skill_learning' career.slug roadmap_skill.skill.id %}"
+            class="module-back"
+        >
+            ← Back to {{ roadmap_skill.skill.name }} Modules
+        </a>
+
+
+        <section class="module-header">
+
+            <div class="module-breadcrumb">
+
+                {{ career.name }}
+
+                <span>›</span>
+
+                {{ roadmap_skill.skill.name }}
+
+                <span>›</span>
+
+                Learning
+
+            </div>
+
+
+            <h1>
+                {{ module.title }}
+            </h1>
+
+
+            <div class="module-description">
+                {{ module.description }}
+            </div>
+
+
+            <div class="module-meta">
+
+                <span class="meta-badge">
+                    ⏱ {{ module.estimated_minutes }} minutes
+                </span>
+
+                <span class="meta-badge">
+                    {{ module.get_difficulty_display }}
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <section class="lesson-card">
+
+            <h2>
+                Learn: {{ module.title }}
+            </h2>
+
+
+            <div class="lesson-content">
+
+                {% if module.title == "Python Fundamentals" %}
+
+                    <p>
+                        Python is a high-level, interpreted programming
+                        language known for its simple and readable syntax.
+                    </p>
+
+                    <p>
+                        It is widely used in backend development,
+                        automation, data science, artificial intelligence,
+                        and many other areas.
+                    </p>
+
+                    <div class="learning-note">
+                        💡 <strong>CareerPilot Tip:</strong>
+                        Focus on understanding the concepts rather than
+                        memorizing syntax.
+                    </div>
+
+                    <p>
+                        In this module, you will learn the basic structure
+                        of Python programs, variables, data types and
+                        fundamental programming concepts.
+                    </p>
+
+                {% else %}
+
+                    <p>
+                        This learning module will guide you through
+                        <strong>{{ module.title }}</strong>.
+                    </p>
+
+                    <p>
+                        Study the concepts carefully and practice them
+                        before moving to the next module.
+                    </p>
+
+                    <div class="learning-note">
+                        💡 More detailed learning content will be added
+                        to this module as the CareerPilot learning system
+                        is expanded.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <div class="complete-section">
+
+                {% if progress.status == 'COMPLETED' %}
+
+                    <span class="completed-message">
+                        ✓ Module Completed
+                    </span>
+
+                {% else %}
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+                        <button
+                            type="submit"
+                            class="complete-button"
+                        >
+                            ✓ Mark Module as Complete
+                        </button>
+
+                    </form>
+
+                {% endif %}
+
+            </div>
+
+        </section>
+
+    </div>
+
+</div>
+
+{% endblock %}

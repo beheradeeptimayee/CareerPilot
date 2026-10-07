@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'core',
     'careers',
     'assessments',
+    'roadmaps',
 ]
 
 MIDDLEWARE = [

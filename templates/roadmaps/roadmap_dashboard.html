@@ -1,0 +1,1149 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Learning Roadmap | CareerPilot
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    /* ================================
+       ROADMAP DASHBOARD
+       ================================ */
+
+    .roadmap-page {
+        min-height: calc(100vh - 140px);
+        background: #0F172A;
+        color: #F8FAFC;
+        padding: 35px 40px 60px;
+    }
+
+    .roadmap-container {
+        max-width: 1500px;
+        margin: 0 auto;
+    }
+
+    /* ================================
+       TOP HEADER
+       ================================ */
+
+    .roadmap-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+
+    .roadmap-header-left {
+        flex: 1;
+    }
+
+    .roadmap-breadcrumb {
+        color: #94A3B8;
+        font-size: 14px;
+        margin-bottom: 12px;
+    }
+
+    .roadmap-breadcrumb span {
+        color: #A78BFA;
+    }
+
+    .roadmap-header h1 {
+        margin: 0;
+        font-size: 38px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+    }
+
+    .roadmap-header p {
+        margin: 10px 0 0;
+        color: #CBD5E1;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    .career-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 18px;
+        padding: 8px 15px;
+        border-radius: 20px;
+        background: rgba(139, 92, 246, 0.15);
+        border: 1px solid rgba(167, 139, 250, 0.35);
+        color: #C4B5FD;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    /* ================================
+       HEADER ACTION
+       ================================ */
+
+    .roadmap-header-action {
+        display: flex;
+        align-items: center;
+    }
+
+    .back-btn {
+        text-decoration: none;
+        color: #CBD5E1;
+        background: #1E293B;
+        border: 1px solid #334155;
+        padding: 11px 18px;
+        border-radius: 10px;
+        transition: 0.2s ease;
+    }
+
+    .back-btn:hover {
+        background: #312E81;
+        color: #FFFFFF;
+    }
+
+    /* ================================
+       MAIN GRID
+       ================================ */
+
+    .roadmap-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 25px;
+        align-items: start;
+    }
+
+    .roadmap-main {
+        min-width: 0;
+    }
+
+    /* ================================
+       STATS
+       ================================ */
+
+    .roadmap-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+        margin-bottom: 25px;
+    }
+
+    .stat-card {
+        background: #1E293B;
+        border: 1px solid #334155;
+        border-radius: 16px;
+        padding: 22px;
+    }
+
+    .stat-label {
+        color: #94A3B8;
+        font-size: 13px;
+        margin-bottom: 8px;
+    }
+
+    .stat-value {
+        font-size: 28px;
+        font-weight: 700;
+        color: #F8FAFC;
+    }
+
+    .stat-subtext {
+        margin-top: 6px;
+        color: #64748B;
+        font-size: 12px;
+    }
+
+    /* ================================
+       SECTION HEADER
+       ================================ */
+
+    .section-heading {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin: 35px 0 18px;
+    }
+
+    .section-heading h2 {
+        margin: 0;
+        font-size: 22px;
+    }
+
+    .section-heading p {
+        margin: 5px 0 0;
+        color: #94A3B8;
+        font-size: 13px;
+    }
+
+    /* ================================
+       ROADMAP SKILLS
+       ================================ */
+
+    .roadmap-skills {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .roadmap-skill-card {
+        background: #1E293B;
+        border: 1px solid #334155;
+        border-radius: 16px;
+        padding: 22px;
+        transition: 0.25s ease;
+    }
+
+    .roadmap-skill-card:hover {
+        border-color: #8B5CF6;
+        transform: translateY(-2px);
+    }
+
+    .skill-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .skill-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .skill-number {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: #312E81;
+        color: #C4B5FD;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .skill-name {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .skill-meta {
+        margin-top: 5px;
+        color: #94A3B8;
+        font-size: 13px;
+    }
+
+    /* ================================
+       PRIORITY
+       ================================ */
+
+    .priority-badge {
+        padding: 6px 11px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .priority-high {
+        background: rgba(244, 63, 94, 0.15);
+        color: #FB7185;
+        border: 1px solid rgba(244, 63, 94, 0.3);
+    }
+
+    .priority-medium {
+        background: rgba(245, 158, 11, 0.15);
+        color: #FBBF24;
+        border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+
+    .priority-low {
+        background: rgba(20, 184, 166, 0.15);
+        color: #2DD4BF;
+        border: 1px solid rgba(20, 184, 166, 0.3);
+    }
+
+    /* ================================
+       SKILL SCORE ROW
+       ================================ */
+
+    .skill-score-row {
+        display: grid;
+        grid-template-columns: 90px 1fr 90px;
+        align-items: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .score-label {
+        color: #94A3B8;
+        font-size: 12px;
+    }
+
+    .score-value {
+        text-align: right;
+        color: #CBD5E1;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .progress-track {
+        height: 8px;
+        background: #0F172A;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            #8B5CF6,
+            #A78BFA
+        );
+        border-radius: 10px;
+    }
+
+    /* ================================
+       GAP INFORMATION
+       ================================ */
+
+    .skill-details {
+        display: flex;
+        gap: 25px;
+        margin-top: 18px;
+        padding-top: 17px;
+        border-top: 1px solid #334155;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .detail-label {
+        color: #64748B;
+        font-size: 11px;
+    }
+
+    .detail-value {
+        color: #CBD5E1;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    /* ================================
+       LEARNING MODULE BUTTON
+       ================================ */
+
+    .module-link-container {
+        margin-top: 18px;
+    }
+
+    .module-link {
+        display: inline-block;
+        text-decoration: none;
+        padding: 10px 16px;
+        border-radius: 9px;
+        background: #8B5CF6;
+        color: #FFFFFF;
+        font-size: 13px;
+        font-weight: 600;
+        transition: 0.2s ease;
+    }
+
+    .module-link:hover {
+        background: #7C3AED;
+        color: #FFFFFF;
+    }
+
+    /* ================================
+       RIGHT SIDEBAR
+       ================================ */
+
+    .roadmap-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        position: sticky;
+        top: 20px;
+    }
+
+    .sidebar-card {
+        background: #1E293B;
+        border: 1px solid #334155;
+        border-radius: 16px;
+        padding: 22px;
+    }
+
+    .sidebar-card h3 {
+        margin: 0 0 18px;
+        font-size: 17px;
+    }
+
+    /* ================================
+       OVERALL PROGRESS
+       ================================ */
+
+    .overall-progress {
+        text-align: center;
+    }
+
+    .progress-circle {
+        width: 150px;
+        height: 150px;
+        margin: 10px auto 18px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+    }
+
+    .progress-circle::before {
+        content: "";
+        position: absolute;
+        width: 118px;
+        height: 118px;
+        border-radius: 50%;
+        background: #1E293B;
+    }
+
+    .progress-circle-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .progress-circle-value {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .progress-circle-label {
+        display: block;
+        margin-top: 3px;
+        color: #94A3B8;
+        font-size: 11px;
+    }
+
+    /* ================================
+       READINESS
+       ================================ */
+
+    .readiness-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #334155;
+    }
+
+    .readiness-row:last-child {
+        border-bottom: none;
+    }
+
+    .readiness-label {
+        color: #94A3B8;
+        font-size: 13px;
+    }
+
+    .readiness-value {
+        color: #F8FAFC;
+        font-weight: 600;
+        font-size: 13px;
+    }
+
+    /* ================================
+       AI RECOMMENDATION
+       ================================ */
+
+    .ai-card {
+        background:
+            linear-gradient(
+                145deg,
+                rgba(139, 92, 246, 0.18),
+                rgba(30, 41, 59, 1)
+            );
+        border-color: rgba(139, 92, 246, 0.35);
+    }
+
+    .ai-icon {
+        width: 42px;
+        height: 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: rgba(139, 92, 246, 0.2);
+        margin-bottom: 14px;
+        font-size: 20px;
+    }
+
+    .ai-card p {
+        color: #CBD5E1;
+        font-size: 13px;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .ai-highlight {
+        color: #C4B5FD;
+        font-weight: 600;
+    }
+
+    /* ================================
+       QUICK ACTIONS
+       ================================ */
+
+    .quick-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .quick-action {
+        text-decoration: none;
+        padding: 12px 14px;
+        border-radius: 10px;
+        background: #0F172A;
+        border: 1px solid #334155;
+        color: #CBD5E1;
+        font-size: 13px;
+        transition: 0.2s ease;
+    }
+
+    .quick-action:hover {
+        background: #312E81;
+        border-color: #8B5CF6;
+        color: #FFFFFF;
+    }
+
+    /* ================================
+       EMPTY STATE
+       ================================ */
+
+    .empty-roadmap {
+        background: #1E293B;
+        border: 1px solid #334155;
+        border-radius: 16px;
+        padding: 50px 30px;
+        text-align: center;
+    }
+
+    .empty-roadmap h3 {
+        margin-bottom: 8px;
+    }
+
+    .empty-roadmap p {
+        color: #94A3B8;
+    }
+
+    /* ================================
+       RESPONSIVE
+       ================================ */
+
+    @media (max-width: 1100px) {
+
+        .roadmap-layout {
+            grid-template-columns: 1fr;
+        }
+
+        .roadmap-sidebar {
+            position: static;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 750px) {
+
+        .roadmap-page {
+            padding: 25px 18px 45px;
+        }
+
+        .roadmap-header {
+            flex-direction: column;
+        }
+
+        .roadmap-header h1 {
+            font-size: 30px;
+        }
+
+        .roadmap-stats {
+            grid-template-columns: 1fr;
+        }
+
+        .roadmap-sidebar {
+            grid-template-columns: 1fr;
+        }
+
+        .skill-card-top {
+            flex-direction: column;
+        }
+
+        .skill-score-row {
+            grid-template-columns: 70px 1fr 60px;
+        }
+
+        .skill-details {
+            flex-wrap: wrap;
+        }
+
+    }
+
+</style>
+
+
+<div class="roadmap-page">
+
+    <div class="roadmap-container">
+
+        <!-- ================================
+             HEADER
+             ================================ -->
+
+        <div class="roadmap-header">
+
+            <div class="roadmap-header-left">
+
+                <div class="roadmap-breadcrumb">
+
+                    Career Paths
+
+                    <span>›</span>
+
+                    {{ career.name }}
+
+                    <span>›</span>
+
+                    Learning Roadmap
+
+                </div>
+
+
+                <h1>
+                    Learning Roadmap
+                </h1>
+
+
+                <p>
+
+                    Your personalized learning journey for becoming a
+
+                    <strong>
+                        {{ career.name }}
+                    </strong>.
+
+                </p>
+
+
+                <div class="career-badge">
+
+                    🎯 {{ career.name }}
+
+                </div>
+
+            </div>
+
+
+            <div class="roadmap-header-action">
+
+                <a
+                    href="{% url 'skill_gap_analysis' career.slug %}"
+                    class="back-btn"
+                >
+                    ← Skill Gap
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================================
+             MAIN LAYOUT
+             ================================ -->
+
+        <div class="roadmap-layout">
+
+
+            <!-- ================================
+                 LEFT CONTENT
+                 ================================ -->
+
+            <div class="roadmap-main">
+
+
+                <!-- STATS -->
+
+                <div class="roadmap-stats">
+
+                    <div class="stat-card">
+
+                        <div class="stat-label">
+                            Overall Progress
+                        </div>
+
+                        <div class="stat-value">
+                            {{ roadmap.overall_progress|floatformat:0 }}%
+                        </div>
+
+                        <div class="stat-subtext">
+                            Roadmap completion
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-label">
+                            Skills
+                        </div>
+
+                        <div class="stat-value">
+                            {{ roadmap_skills|length }}
+                        </div>
+
+                        <div class="stat-subtext">
+                            Skills in your roadmap
+                        </div>
+
+                    </div>
+
+
+                    <div class="stat-card">
+
+                        <div class="stat-label">
+                            Estimated Duration
+                        </div>
+
+                        <div class="stat-value">
+                            {{ roadmap.estimated_duration_weeks }}
+                        </div>
+
+                        <div class="stat-subtext">
+                            Weeks
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SKILLS -->
+
+                <div class="section-heading">
+
+                    <div>
+
+                        <h2>
+                            Your Learning Path
+                        </h2>
+
+                        <p>
+                            Focus on the highest-priority skills first.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="roadmap-skills">
+
+                    {% for roadmap_skill in roadmap_skills %}
+
+                        <div class="roadmap-skill-card">
+
+
+                            <!-- SKILL HEADER -->
+
+                            <div class="skill-card-top">
+
+                                <div class="skill-info">
+
+                                    <div class="skill-number">
+                                        {{ forloop.counter }}
+                                    </div>
+
+
+                                    <div>
+
+                                        <h3 class="skill-name">
+                                            {{ roadmap_skill.skill.name }}
+                                        </h3>
+
+
+                                        <div class="skill-meta">
+
+                                            {{ roadmap_skill.status|title }}
+
+                                            ·
+
+                                            {{ roadmap_skill.progress|floatformat:0 }}%
+
+                                            complete
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+
+                                {% if roadmap_skill.priority == 'HIGH' %}
+
+                                    <div class="priority-badge priority-high">
+                                        HIGH PRIORITY
+                                    </div>
+
+                                {% elif roadmap_skill.priority == 'MEDIUM' %}
+
+                                    <div class="priority-badge priority-medium">
+                                        MEDIUM PRIORITY
+                                    </div>
+
+                                {% else %}
+
+                                    <div class="priority-badge priority-low">
+                                        LOW PRIORITY
+                                    </div>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <!-- SCORE -->
+
+                            <div class="skill-score-row">
+
+                                <div class="score-label">
+                                    Current
+                                </div>
+
+
+                                <div class="progress-track">
+
+                                    {% if roadmap_skill.current_score > 100 %}
+
+                                        <div
+                                            class="progress-fill"
+                                            style="width: 100%;"
+                                        ></div>
+
+                                    {% else %}
+
+                                        <div
+                                            class="progress-fill"
+                                            style="width: {{ roadmap_skill.current_score }}%;"
+                                        ></div>
+
+                                    {% endif %}
+
+                                </div>
+
+
+                                <div class="score-value">
+
+                                    {{ roadmap_skill.current_score|floatformat:0 }}%
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- DETAILS -->
+
+                            <div class="skill-details">
+
+                                <div class="detail-item">
+
+                                    <span class="detail-label">
+                                        Target
+                                    </span>
+
+                                    <span class="detail-value">
+                                        {{ roadmap_skill.target_score|floatformat:0 }}%
+                                    </span>
+
+                                </div>
+
+
+                                <div class="detail-item">
+
+                                    <span class="detail-label">
+                                        Skill Gap
+                                    </span>
+
+                                    <span class="detail-value">
+                                        {{ roadmap_skill.gap_score|floatformat:0 }}%
+                                    </span>
+
+                                </div>
+
+
+                                <div class="detail-item">
+
+                                    <span class="detail-label">
+                                        Priority
+                                    </span>
+
+                                    <span class="detail-value">
+                                        {{ roadmap_skill.get_priority_display }}
+                                    </span>
+
+                                </div>
+
+
+                                <div class="detail-item">
+
+                                    <span class="detail-label">
+                                        Modules
+                                    </span>
+
+                                    <span class="detail-value">
+                                        {{ roadmap_skill.learning_modules.all|length }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- LEARNING MODULE BUTTON -->
+
+                            <div class="module-link-container">
+
+                                <a
+                                    href="{% url 'skill_learning' career.slug roadmap_skill.skill.id %}"
+                                    class="module-link"
+                                >
+                                    View Learning Modules →
+                                </a>
+
+                            </div>
+
+                        </div>
+
+
+                    {% empty %}
+
+                        <div class="empty-roadmap">
+
+                            <h3>
+                                No roadmap skills found
+                            </h3>
+
+                            <p>
+                                Your learning roadmap does not contain
+                                any skills yet.
+                            </p>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================
+                 RIGHT SIDEBAR
+                 ================================ -->
+
+            <aside class="roadmap-sidebar">
+
+
+                <!-- OVERALL PROGRESS -->
+
+                <div class="sidebar-card overall-progress">
+
+                    <h3>
+                        Roadmap Progress
+                    </h3>
+
+
+                    <div
+                        class="progress-circle"
+                        style="
+                            background:
+                            conic-gradient(
+                                #8B5CF6
+                                {{ roadmap.overall_progress }}%,
+                                #334155
+                                0
+                            );
+                        "
+                    >
+
+                        <div class="progress-circle-content">
+
+                            <div class="progress-circle-value">
+                                {{ roadmap.overall_progress|floatformat:0 }}%
+                            </div>
+
+                            <span class="progress-circle-label">
+                                Complete
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="readiness-row">
+
+                        <span class="readiness-label">
+                            Career
+                        </span>
+
+                        <span class="readiness-value">
+                            {{ career.name }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="readiness-row">
+
+                        <span class="readiness-label">
+                            Skills
+                        </span>
+
+                        <span class="readiness-value">
+                            {{ roadmap_skills|length }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- PRIORITY SUMMARY -->
+
+                <div class="sidebar-card">
+
+                    <h3>
+                        Priority Focus
+                    </h3>
+
+
+                    {% for roadmap_skill in roadmap_skills %}
+
+                        <div class="readiness-row">
+
+                            <span class="readiness-label">
+                                {{ roadmap_skill.skill.name }}
+                            </span>
+
+
+                            <span class="readiness-value">
+
+                                {% if roadmap_skill.priority == 'HIGH' %}
+
+                                    🔴
+
+                                {% elif roadmap_skill.priority == 'MEDIUM' %}
+
+                                    🟡
+
+                                {% else %}
+
+                                    🟢
+
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- AI RECOMMENDATION -->
+
+                <div class="sidebar-card ai-card">
+
+                    <div class="ai-icon">
+                        🤖
+                    </div>
+
+
+                    <h3>
+                        AI Recommendation
+                    </h3>
+
+
+                    <p>
+
+                        Your roadmap is prioritized according to your
+                        current skill levels and the requirements of
+
+                        <span class="ai-highlight">
+                            {{ career.name }}
+                        </span>.
+
+                        Start with the highest-priority skills to close
+                        your largest gaps first.
+
+                    </p>
+
+                </div>
+
+
+                <!-- QUICK ACTIONS -->
+
+                <div class="sidebar-card">
+
+                    <h3>
+                        Quick Actions
+                    </h3>
+
+
+                    <div class="quick-actions">
+
+                        <a
+                            href="{% url 'skill_gap_analysis' career.slug %}"
+                            class="quick-action"
+                        >
+                            📊 View Skill Gap
+                        </a>
+
+
+                        <a
+                            href="{% url 'career_list' %}"
+                            class="quick-action"
+                        >
+                            💼 Explore Careers
+                        </a>
+
+
+                        <a
+                            href="{% url 'profile' %}"
+                            class="quick-action"
+                        >
+                            👤 View Profile
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
