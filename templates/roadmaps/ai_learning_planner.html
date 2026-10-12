@@ -1,0 +1,1316 @@
+{% extends 'base.html' %}
+
+{% block title %}AI Learning Planner | CareerPilot{% endblock %}
+
+{% block content %}
+
+<style>
+.ai-planner {
+    --panel: #172238;
+    --border: #334155;
+    --purple: #8b5cf6;
+    --purple-light: #a78bfa;
+    --text: #f8fafc;
+    --muted: #94a3b8;
+    --green: #34d399;
+    --yellow: #fbbf24;
+
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 30px 24px 60px;
+    color: var(--text);
+    font-family: inherit;
+}
+
+.ai-planner * {
+    box-sizing: border-box;
+}
+
+.ai-planner .eyebrow {
+    color: var(--purple-light);
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    text-transform: uppercase;
+}
+
+.ai-planner .page-heading {
+    margin: 12px 0;
+    font-size: clamp(26px, 3vw, 36px);
+    line-height: 1.2;
+    font-weight: 800;
+}
+
+.ai-planner .muted {
+    color: var(--muted);
+    line-height: 1.7;
+}
+
+.ai-planner .planner-hero {
+    padding: 30px;
+    margin-bottom: 24px;
+    border: 1px solid #433477;
+    border-radius: 18px;
+    background:
+        radial-gradient(
+            circle at 90% 5%,
+            #45308055,
+            transparent 35%
+        ),
+        linear-gradient(130deg, #172238, #171b37);
+}
+
+.ai-planner .steps {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 24px;
+}
+
+.ai-planner .step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.ai-planner .step-number {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #273449;
+    border: 1px solid var(--border);
+    font-weight: 800;
+}
+
+.ai-planner .step.active {
+    color: var(--text);
+}
+
+.ai-planner .step.active .step-number {
+    background: var(--purple);
+    border-color: var(--purple);
+}
+
+.ai-planner .step-line {
+    width: 30px;
+    height: 1px;
+    background: var(--border);
+}
+
+.ai-planner .layout {
+    display: grid;
+    grid-template-columns:
+        minmax(0, 1.1fr)
+        minmax(300px, 0.9fr);
+    gap: 20px;
+    align-items: start;
+}
+
+.ai-planner .card {
+    min-width: 0;
+    padding: 24px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: var(--panel);
+}
+
+.ai-planner .card-heading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+.ai-planner .card-icon {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: #39246b;
+    font-size: 20px;
+}
+
+.ai-planner h2 {
+    margin: 0;
+    font-size: 19px;
+    font-weight: 800;
+}
+
+.ai-planner h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 750;
+}
+
+.ai-planner .description {
+    margin: 0 0 20px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+}
+
+.ai-planner .field {
+    margin-top: 17px;
+}
+
+.ai-planner label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ai-planner input,
+.ai-planner select,
+.ai-planner textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 12px 13px;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    background: #0f172a;
+    color: var(--text);
+    font: inherit;
+    font-size: 13px;
+    outline: none;
+}
+
+.ai-planner input:focus,
+.ai-planner select:focus,
+.ai-planner textarea:focus {
+    border-color: var(--purple-light);
+    box-shadow: 0 0 0 3px #8b5cf622;
+}
+
+.ai-planner .field-hint {
+    display: block;
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+}
+
+.ai-planner .two-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 13px;
+}
+
+.ai-planner .primary-btn,
+.ai-planner .secondary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 12px 17px;
+    border: 1px solid transparent;
+    border-radius: 10px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.ai-planner .primary-btn {
+    color: white;
+    background: linear-gradient(110deg, #7c3aed, #8b5cf6);
+}
+
+.ai-planner .primary-btn:hover {
+    filter: brightness(1.12);
+    transform: translateY(-1px);
+}
+
+.ai-planner .primary-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+    transform: none;
+}
+
+.ai-planner .secondary-btn {
+    color: var(--text);
+    background: #253047;
+    border-color: var(--border);
+}
+
+.ai-planner .secondary-btn:hover {
+    border-color: var(--purple-light);
+}
+
+.ai-planner .generate-btn {
+    width: 100%;
+    margin-top: 23px;
+}
+
+.ai-planner .skill-list {
+    display: grid;
+    gap: 20px;
+    margin-top: 24px;
+}
+
+.ai-planner .skill-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 9px;
+}
+
+.ai-planner .skill-top span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.ai-planner .progress-track {
+    height: 7px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #29364c;
+}
+
+.ai-planner .progress-fill {
+    height: 100%;
+    border-radius: inherit;
+}
+
+.ai-planner .purple-fill {
+    background: linear-gradient(90deg, #7c3aed, #a78bfa);
+}
+
+.ai-planner .green-fill {
+    background: linear-gradient(90deg, #059669, #34d399);
+}
+
+.ai-planner .yellow-fill {
+    background: linear-gradient(90deg, #d97706, #fbbf24);
+}
+
+.ai-planner .insight {
+    padding: 16px;
+    margin-top: 24px;
+    border: 1px solid #6d4ab4;
+    border-radius: 12px;
+    background: #39246b33;
+}
+
+.ai-planner .insight strong {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+}
+
+.ai-planner .insight p {
+    margin: 0;
+    color: #c4b5fd;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.ai-planner .snapshot-note {
+    padding: 12px;
+    margin-top: 20px;
+    border-radius: 8px;
+    background: #0f172a;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+.ai-planner .preview {
+    display: none;
+    margin-top: 24px;
+    scroll-margin-top: 24px;
+}
+
+.ai-planner .preview.visible {
+    display: block;
+}
+
+.ai-planner .preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.ai-planner .preview-header p {
+    margin: 7px 0 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.ai-planner .pill {
+    display: inline-block;
+    padding: 5px 9px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: #cbd5e1;
+    font-size: 11px;
+}
+
+.ai-planner .module-list {
+    display: grid;
+    gap: 12px;
+}
+
+.ai-planner .module-card {
+    padding: 18px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #111c30;
+}
+
+.ai-planner .module-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.ai-planner .module-number {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: #39246b;
+    color: #ddd6fe;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.ai-planner .module-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ai-planner .module-info h3 {
+    margin: 2px 0 8px;
+    line-height: 1.5;
+}
+
+.ai-planner .module-info p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.ai-planner .module-meta {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.ai-planner .preview-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.ai-planner .notice {
+    display: none;
+    padding: 14px 16px;
+    margin-top: 16px;
+    border: 1px solid #475569;
+    border-radius: 9px;
+    background: #0f172a;
+    color: #cbd5e1;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.ai-planner .notice.show {
+    display: block;
+}
+
+.ai-planner .loading-text {
+    display: none;
+    margin-top: 13px;
+    color: var(--purple-light);
+    text-align: center;
+    font-size: 12px;
+}
+
+.ai-planner .loading-text.show {
+    display: block;
+}
+
+@media (max-width: 800px) {
+    .ai-planner .layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 520px) {
+    .ai-planner {
+        padding: 22px 12px 40px;
+    }
+
+    .ai-planner .planner-hero,
+    .ai-planner .card {
+        padding: 18px;
+    }
+
+    .ai-planner .two-fields {
+        grid-template-columns: 1fr;
+    }
+
+    .ai-planner .step-line {
+        width: 12px;
+    }
+
+    .ai-planner .preview-actions > button {
+        width: 100%;
+    }
+}
+</style>
+
+<div class="ai-planner">
+
+    <!-- PAGE INTRODUCTION -->
+    <section class="planner-hero">
+        <span class="eyebrow">CareerPilot · AI Learning Studio</span>
+
+        <h1 class="page-heading">
+            Your career. Your goals. Your learning path.
+        </h1>
+
+        <p class="muted">
+            Create a learning plan tailored to your current skills,
+            career requirements and available study time.
+        </p>
+
+        <div class="steps">
+            <div class="step active">
+                <span class="step-number">1</span>
+                Set your goal
+            </div>
+
+            <span class="step-line"></span>
+
+            <div class="step">
+                <span class="step-number">2</span>
+                Review your plan
+            </div>
+
+            <span class="step-line"></span>
+
+            <div class="step">
+                <span class="step-number">3</span>
+                Save your roadmap
+            </div>
+        </div>
+    </section>
+
+    <div class="layout">
+
+        <!-- LEARNING GOAL FORM -->
+        <section class="card">
+
+            <div class="card-heading">
+                <div class="card-icon">🎯</div>
+                <div>
+                    <h2>Build your learning plan</h2>
+                </div>
+            </div>
+
+            <p class="description">
+                Tell CareerPilot what you want to achieve.
+                Your learning plan can then be tailored to your needs.
+            </p>
+
+            <div class="field">
+                <label for="careerGoal">Target career</label>
+
+                <select id="careerGoal">
+                    {% for career in careers %}
+                        <option
+                            value="{{ career.name }}"
+                            data-career-slug="{{ career.slug }}"
+                            {% if default_career and career.id == default_career.id %}selected{% endif %}
+                        >
+                            {{ career.name }}
+                        </option>
+                    {% empty %}
+                        <option value="">No active careers available</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="focusSkill">Skill to focus on</label>
+
+                <select id="focusSkill">
+                    {% for skill in skills %}
+                        <option
+                            value="{{ skill.name }}"
+                            data-skill-id="{{ skill.id }}"
+                            {% if default_skill and skill.id == default_skill.id %}selected{% endif %}
+                        >
+                            {{ skill.name }}
+                        </option>
+                    {% empty %}
+                        <option value="">No active skills available</option>
+                    {% endfor %}
+                </select>
+
+                <span class="field-hint">
+                    Choose one skill to start. We can expand this into
+                    a complete career roadmap in the next stage.
+                </span>
+            </div>
+
+            <div class="two-fields">
+
+                <div class="field">
+                    <label for="currentLevel">Current level</label>
+
+                    <select id="currentLevel">
+                        <option value="BEGINNER">Beginner</option>
+                        <option value="INTERMEDIATE">Intermediate</option>
+                        <option value="ADVANCED">Advanced</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="targetLevel">Target level</label>
+
+                    <select id="targetLevel">
+                        <option value="INTERMEDIATE">Intermediate</option>
+                        <option value="ADVANCED">Advanced</option>
+                        <option value="JOB_READY">Job Ready</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="two-fields">
+
+                <div class="field">
+                    <label for="studyHours">Hours per day</label>
+
+                    <select id="studyHours">
+                        <option value="1">1 hour</option>
+                        <option value="2" selected>2 hours</option>
+                        <option value="3">3 hours</option>
+                        <option value="4">4+ hours</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="duration">Learning duration</label>
+
+                    <select id="duration">
+                        <option value="2">2 weeks</option>
+                        <option value="4" selected>4 weeks</option>
+                        <option value="6">6 weeks</option>
+                        <option value="8">8 weeks</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <div class="field">
+                <label for="learningPreference">
+                    Preferred learning style
+                </label>
+
+                <select id="learningPreference">
+                    <option value="balanced">
+                        Balanced: theory and practice
+                    </option>
+                    <option value="projects">
+                        Project-based learning
+                    </option>
+                    <option value="practice">
+                        Exercises and coding practice
+                    </option>
+                    <option value="concepts">
+                        Concepts and examples
+                    </option>
+                </select>
+            </div>
+
+            <div class="field">
+                <label for="learningGoal">
+                    What do you want to achieve?
+                </label>
+
+                <textarea
+                    id="learningGoal"
+                    rows="3"
+                    maxlength="500"
+                    placeholder="Example: Learn React and build a project that connects to a Django REST API."
+                ></textarea>
+            </div>
+
+            <button
+                type="button"
+                class="primary-btn generate-btn"
+                id="generatePlan"
+            >
+                ✨ Generate Learning Plan
+            </button>
+
+            <div class="loading-text" id="loadingText" aria-live="polite">
+                Preparing your learning plan preview...
+            </div>
+
+        </section>
+
+        <!-- SKILL GAP SUMMARY -->
+        <aside class="card">
+
+            <div class="card-heading">
+                <div class="card-icon">📊</div>
+                <div>
+                    <h2>Skill-gap snapshot</h2>
+                </div>
+            </div>
+
+            <p class="description">
+                Skills can be compared against the target proficiency
+                required for your selected career.
+            </p>
+
+            <div class="skill-list">
+
+                <div>
+                    <div class="skill-top">
+                        <h3>Python</h3>
+                        <span>68% / 80%</span>
+                    </div>
+
+                    <div class="progress-track">
+                        <div
+                            class="progress-fill purple-fill"
+                            style="width: 68%;"
+                        ></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="skill-top">
+                        <h3>Django</h3>
+                        <span>45% / 75%</span>
+                    </div>
+
+                    <div class="progress-track">
+                        <div
+                            class="progress-fill yellow-fill"
+                            style="width: 45%;"
+                        ></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="skill-top">
+                        <h3>React</h3>
+                        <span>30% / 75%</span>
+                    </div>
+
+                    <div class="progress-track">
+                        <div
+                            class="progress-fill purple-fill"
+                            style="width: 30%;"
+                        ></div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="skill-top">
+                        <h3>SQL</h3>
+                        <span>60% / 75%</span>
+                    </div>
+
+                    <div class="progress-track">
+                        <div
+                            class="progress-fill green-fill"
+                            style="width: 60%;"
+                        ></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="insight">
+                <strong>💡 Personalized learning</strong>
+
+                <p>
+                    CareerPilot can use assessment scores, skill gaps,
+                    career requirements and your preferences to prioritize
+                    the next topics you should learn.
+                </p>
+            </div>
+
+            <div class="snapshot-note">
+                The displayed percentages are illustrative examples,
+                not live assessment data. We will connect this section
+                to your database in a later step.
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- LEARNING PLAN PREVIEW -->
+    <section class="card preview" id="roadmapPreview">
+
+        <div class="preview-header">
+
+            <div>
+                <span class="eyebrow">Your learning plan</span>
+
+                <h2 id="previewTitle" style="margin-top: 8px;">
+                    Your learning roadmap
+                </h2>
+
+                <p id="previewDescription"></p>
+            </div>
+
+            <span class="pill" id="moduleCount"></span>
+
+        </div>
+
+        <div class="module-list" id="moduleList"></div>
+
+        <div class="preview-actions">
+
+            <button
+                type="button"
+                class="secondary-btn"
+                id="editPlan"
+            >
+                Edit Module Titles
+            </button>
+
+            <button
+                type="button"
+                class="primary-btn"
+                id="savePlan"
+            >
+                Save to My Roadmap →
+            </button>
+
+        </div>
+
+        <div class="notice" id="plannerNotice" role="status"></div>
+
+    </section>
+
+</div>
+
+<script>
+(function () {
+    "use strict";
+
+    const careerSelect = document.getElementById("careerGoal");
+    const skillSelect = document.getElementById("focusSkill");
+
+    const generateButton = document.getElementById("generatePlan");
+    const loadingText = document.getElementById("loadingText");
+    const preview = document.getElementById("roadmapPreview");
+    const moduleList = document.getElementById("moduleList");
+    const notice = document.getElementById("plannerNotice");
+
+    let generatedModules = [];
+
+    /*
+     * Default selections.
+     * These use database values rendered by Django.
+     */
+    const preferredCareer = Array.from(careerSelect.options).find(
+        option =>
+            option.dataset.careerSlug === "full-stack-developer"
+    );
+
+    if (preferredCareer) {
+        careerSelect.value = preferredCareer.value;
+    }
+
+    const preferredSkill = Array.from(skillSelect.options).find(
+        option =>
+            option.value.trim().toLowerCase() === "react"
+    );
+
+    if (preferredSkill) {
+        skillSelect.value = preferredSkill.value;
+    }
+
+    /*
+     * Local demonstration content.
+     * These are examples, not responses from OpenAI.
+     */
+    const moduleLibrary = {
+        "React": [
+            {
+                title: "React Fundamentals",
+                description: "Understand React, JSX, components and how a React application is structured.",
+                minutes: 45,
+                level: "Beginner"
+            },
+            {
+                title: "Components, Props and Events",
+                description: "Build reusable components and pass data using props and event handlers.",
+                minutes: 60,
+                level: "Beginner"
+            },
+            {
+                title: "State and React Hooks",
+                description: "Learn state management, useState, useEffect and handling user interactions.",
+                minutes: 75,
+                level: "Intermediate"
+            },
+            {
+                title: "Connect React to a REST API",
+                description: "Fetch data from an API, handle loading states and display responses in the interface.",
+                minutes: 75,
+                level: "Intermediate"
+            },
+            {
+                title: "Build a React Mini Project",
+                description: "Apply your learning in a small project with reusable components and API data.",
+                minutes: 120,
+                level: "Intermediate"
+            }
+        ],
+
+        "Python": [
+            {
+                title: "Python Fundamentals",
+                description: "Understand syntax, variables, data types and basic input and output.",
+                minutes: 45,
+                level: "Beginner"
+            },
+            {
+                title: "Conditions, Loops and Collections",
+                description: "Practise conditions, loops, lists, tuples, sets and dictionaries.",
+                minutes: 60,
+                level: "Beginner"
+            },
+            {
+                title: "Functions and Modules",
+                description: "Write reusable functions and organize code into modules.",
+                minutes: 60,
+                level: "Beginner"
+            },
+            {
+                title: "Object-Oriented Programming",
+                description: "Learn classes, objects, inheritance and encapsulation.",
+                minutes: 75,
+                level: "Intermediate"
+            },
+            {
+                title: "Build a Python Mini Project",
+                description: "Use functions, collections and error handling in a practical project.",
+                minutes: 120,
+                level: "Intermediate"
+            }
+        ],
+
+        "Django": [
+            {
+                title: "Django Fundamentals",
+                description: "Understand Django projects, applications and the MVT architecture.",
+                minutes: 45,
+                level: "Beginner"
+            },
+            {
+                title: "URLs, Views and Templates",
+                description: "Connect routes to views and render dynamic HTML templates.",
+                minutes: 60,
+                level: "Beginner"
+            },
+            {
+                title: "Models and Django ORM",
+                description: "Create models, define relationships, run migrations and query data.",
+                minutes: 75,
+                level: "Intermediate"
+            },
+            {
+                title: "Forms and Authentication",
+                description: "Handle user input, validate forms and protect application pages.",
+                minutes: 75,
+                level: "Intermediate"
+            },
+            {
+                title: "Build a Django Mini Project",
+                description: "Combine views, templates, models and authentication in one project.",
+                minutes: 120,
+                level: "Intermediate"
+            }
+        ],
+
+        "SQL": [
+            {
+                title: "SQL Fundamentals",
+                description: "Understand tables, records, data types and basic SQL statements.",
+                minutes: 40,
+                level: "Beginner"
+            },
+            {
+                title: "Filtering and Sorting",
+                description: "Practise SELECT, WHERE, ORDER BY, DISTINCT and filtering conditions.",
+                minutes: 50,
+                level: "Beginner"
+            },
+            {
+                title: "Joins and Relationships",
+                description: "Use INNER JOIN, LEFT JOIN and multiple-table queries.",
+                minutes: 60,
+                level: "Intermediate"
+            },
+            {
+                title: "Aggregates and Subqueries",
+                description: "Use aggregate functions, GROUP BY, HAVING and nested queries.",
+                minutes: 70,
+                level: "Intermediate"
+            },
+            {
+                title: "SQL Practice Project",
+                description: "Write queries for a realistic database and solve practical questions.",
+                minutes: 90,
+                level: "Intermediate"
+            }
+        ],
+
+        "REST APIs": [
+            {
+                title: "REST API Fundamentals",
+                description: "Understand resources, endpoints, HTTP methods and JSON.",
+                minutes: 40,
+                level: "Beginner"
+            },
+            {
+                title: "Requests and Responses",
+                description: "Work with request data, response bodies and status codes.",
+                minutes: 50,
+                level: "Beginner"
+            },
+            {
+                title: "API Validation and Errors",
+                description: "Validate input and return useful error responses.",
+                minutes: 60,
+                level: "Intermediate"
+            },
+            {
+                title: "API Authentication",
+                description: "Understand authentication, authorization and access controls.",
+                minutes: 70,
+                level: "Intermediate"
+            },
+            {
+                title: "Build and Test an API",
+                description: "Create and test a small API with documented endpoints.",
+                minutes: 120,
+                level: "Intermediate"
+            }
+        ],
+
+        "Git": [
+            {
+                title: "Git Fundamentals",
+                description: "Understand repositories, commits and the working directory.",
+                minutes: 35,
+                level: "Beginner"
+            },
+            {
+                title: "Branches and Merging",
+                description: "Create branches, merge changes and resolve basic conflicts.",
+                minutes: 50,
+                level: "Beginner"
+            },
+            {
+                title: "GitHub and Remote Repositories",
+                description: "Connect a repository and practise push, pull and fetch.",
+                minutes: 45,
+                level: "Beginner"
+            },
+            {
+                title: "Pull Requests and Collaboration",
+                description: "Review changes and understand a collaborative Git workflow.",
+                minutes: 60,
+                level: "Intermediate"
+            },
+            {
+                title: "Publish a Project",
+                description: "Organize a repository, write a README and publish a project.",
+                minutes: 75,
+                level: "Intermediate"
+            }
+        ]
+    };
+
+    function showNotice(message) {
+        notice.textContent = message;
+        notice.classList.add("show");
+    }
+
+    function makeModuleCard(module, index) {
+        const article = document.createElement("article");
+        article.className = "module-card";
+
+        const row = document.createElement("div");
+        row.className = "module-row";
+
+        const number = document.createElement("div");
+        number.className = "module-number";
+        number.textContent = String(index + 1);
+
+        const info = document.createElement("div");
+        info.className = "module-info";
+
+        const title = document.createElement("h3");
+        title.textContent = module.title;
+
+        const description = document.createElement("p");
+        description.textContent = module.description;
+
+        const meta = document.createElement("div");
+        meta.className = "module-meta";
+
+        const time = document.createElement("span");
+        time.className = "pill";
+        time.textContent = module.minutes + " minutes";
+
+        const difficulty = document.createElement("span");
+        difficulty.className = "pill";
+        difficulty.textContent = module.level;
+
+        meta.append(time, difficulty);
+        info.append(title, description, meta);
+        row.append(number, info);
+        article.append(row);
+
+        return article;
+    }
+
+    function renderModules() {
+        moduleList.replaceChildren();
+
+        generatedModules.forEach(function (module, index) {
+            moduleList.appendChild(makeModuleCard(module, index));
+        });
+
+        document.getElementById("moduleCount").textContent =
+            generatedModules.length + " modules";
+    }
+
+    function createSampleModules(skill) {
+        /*
+         * Never substitute Python modules for an unrelated skill.
+         * Unknown skills receive clearly labelled generic examples
+         * until the real AI integration is implemented.
+         */
+        const existingModules = moduleLibrary[skill];
+
+        if (existingModules) {
+            return existingModules.map(function (module) {
+                return Object.assign({}, module);
+            });
+        }
+
+        return [
+            {
+                title: skill + " Fundamentals",
+                description: "Learn the purpose, core concepts and common terminology of " + skill + ".",
+                minutes: 45,
+                level: "Beginner"
+            },
+            {
+                title: skill + " Core Concepts",
+                description: "Study the important concepts and techniques used when working with " + skill + ".",
+                minutes: 60,
+                level: "Beginner"
+            },
+            {
+                title: skill + " Practical Exercises",
+                description: "Practise applying the basic concepts of " + skill + " with guided exercises.",
+                minutes: 75,
+                level: "Intermediate"
+            },
+            {
+                title: skill + " Mini Project",
+                description: "Apply what you have learned by planning and completing a small " + skill + " project.",
+                minutes: 120,
+                level: "Intermediate"
+            }
+        ];
+    }
+
+    generateButton.addEventListener("click", function () {
+        const skill = skillSelect.value;
+        const career = careerSelect.value;
+
+        const currentLevel =
+            document.getElementById("currentLevel").value;
+
+        const targetLevel =
+            document.getElementById("targetLevel").value;
+
+        if (!career || !skill) {
+            showNotice("Please select an active career and a skill.");
+            return;
+        }
+
+        const levelOrder = {
+            "BEGINNER": 1,
+            "INTERMEDIATE": 2,
+            "ADVANCED": 3,
+            "JOB_READY": 4
+        };
+
+        if (levelOrder[targetLevel] <= levelOrder[currentLevel]) {
+            showNotice(
+                "Choose a target level above your current level."
+            );
+            return;
+        }
+
+        generateButton.disabled = true;
+        loadingText.classList.add("show");
+        notice.classList.remove("show");
+
+        /*
+         * This is local sample generation.
+         * It does not call OpenAI or save to the database.
+         */
+        window.setTimeout(function () {
+            try {
+                const duration =
+                    document.getElementById("duration").value;
+
+                const hours =
+                    document.getElementById("studyHours").value;
+
+                const goal =
+                    document.getElementById("learningGoal").value.trim();
+
+                const preference =
+                    document.getElementById("learningPreference").value;
+
+                generatedModules = createSampleModules(skill);
+
+                if (currentLevel === "INTERMEDIATE") {
+                    generatedModules = generatedModules.slice(2);
+                } else if (currentLevel === "ADVANCED") {
+                    generatedModules = generatedModules.slice(3);
+                }
+
+                if (generatedModules.length === 0) {
+                    generatedModules = createSampleModules(skill).slice(-1);
+                }
+
+                document.getElementById("previewTitle").textContent =
+                    skill + " Learning Roadmap";
+
+                let detail =
+                    "Career: " + career +
+                    " · Duration: " + duration + " weeks" +
+                    " · Study time: " + hours + " hour(s) per day.";
+
+                if (goal) {
+                    detail += " Goal: " + goal;
+                }
+
+                detail += " Preference: " +
+                    document.getElementById("learningPreference")
+                        .selectedOptions[0].textContent.trim() + ".";
+
+                document.getElementById("previewDescription").textContent =
+                    detail;
+
+                renderModules();
+
+                preview.classList.add("visible");
+                loadingText.classList.remove("show");
+
+                document.querySelectorAll(".ai-planner .step")
+                    .forEach(function (step, index) {
+                        step.classList.toggle("active", index < 2);
+                    });
+
+                showNotice(
+                    "This is a sample learning plan for preview only. " +
+                    "OpenAI generation and database saving are not connected yet."
+                );
+
+                preview.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start"
+                });
+
+            } catch (error) {
+                console.error("Learning preview error:", error);
+
+                showNotice(
+                    "We couldn't prepare the preview. Please try again."
+                );
+
+            } finally {
+                loadingText.classList.remove("show");
+                generateButton.disabled = false;
+            }
+        }, 350);
+    });
+
+    document.getElementById("editPlan")
+        .addEventListener("click", function () {
+            if (!generatedModules.length) {
+                showNotice("Generate a learning plan first.");
+                return;
+            }
+
+            generatedModules.forEach(function (module, index) {
+                const newTitle = window.prompt(
+                    "Edit module " + (index + 1) + " title:",
+                    module.title
+                );
+
+                if (newTitle && newTitle.trim()) {
+                    module.title = newTitle.trim();
+                }
+            });
+
+            renderModules();
+
+            showNotice(
+                "Your preview has been updated. " +
+                "These changes exist only in this browser preview."
+            );
+        });
+
+    document.getElementById("savePlan")
+        .addEventListener("click", function () {
+            if (!generatedModules.length) {
+                showNotice("Generate a learning plan before saving.");
+                return;
+            }
+
+            showNotice(
+                "The preview is ready, but saving is not connected yet. " +
+                "Next, we'll connect this page to Django so approved " +
+                "modules can be validated and saved safely."
+            );
+        });
+
+})();
+</script>
+
+{% endblock %}

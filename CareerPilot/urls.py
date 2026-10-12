@@ -26,4 +26,5 @@ urlpatterns = [
     path('assessments/', include('assessments.urls')),
     path('roadmaps/', include('roadmaps.urls')),
     path('quizzes/',include('quizzes.urls')),
+    path('progress/',include('progress.urls')),
 ]

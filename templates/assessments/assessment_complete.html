@@ -1,498 +1,658 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
+
+{% block title %}Assessment Results | CareerPilot{% endblock %}
+
 {% block content %}
+<style>
+    :root {
+        --bg: #0F172A;
+        --card: #1E293B;
+        --primary: #8B5CF6;
+        --accent: #A78BFA;
+        --text: #F8FAFC;
+        --secondary: #CBD5E1;
+        --border: #334155;
+        --success: #34D399;
+        --warning: #FBBF24;
+        --danger: #F87171;
+    }
+
+    .results-page {
+        min-height: 100vh;
+        background: var(--bg);
+        color: var(--text);
+        padding: 50px 20px 70px;
+    }
+
+    .results-container {
+        max-width: 1100px;
+        margin: 0 auto;
+    }
+
+    .results-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .results-label {
+        display: inline-block;
+        padding: 8px 15px;
+        border: 1px solid var(--border);
+        border-radius: 30px;
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.5px;
+    }
+
+    .results-header h1 {
+        margin: 20px 0 12px;
+        font-size: clamp(30px, 5vw, 44px);
+        font-weight: 800;
+    }
+
+    .results-header p {
+        color: var(--secondary);
+        line-height: 1.7;
+    }
+
+    .result-card,
+    .results-section-card,
+    .skill-gap-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 28px;
+        margin-bottom: 25px;
+    }
+
+    .score-layout {
+        display: grid;
+        grid-template-columns: 190px 1fr;
+        gap: 30px;
+        align-items: center;
+    }
+
+    .score-circle {
+        width: 165px;
+        height: 165px;
+        border-radius: 50%;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: conic-gradient(
+            var(--primary) {{ score|default:0 }}%,
+            var(--border) 0
+        );
+        position: relative;
+    }
+
+    .score-circle::before {
+        content: "";
+        position: absolute;
+        inset: 10px;
+        border-radius: 50%;
+        background: var(--card);
+    }
+
+    .score-circle strong,
+    .score-circle span {
+        position: relative;
+        z-index: 1;
+    }
+
+    .score-circle strong {
+        font-size: 35px;
+    }
+
+    .score-circle span {
+        color: var(--secondary);
+        font-size: 12px;
+    }
+
+    .score-details h2 {
+        font-size: 25px;
+        margin: 0 0 12px;
+    }
+
+    .score-details p {
+        color: var(--secondary);
+        line-height: 1.7;
+    }
+
+    .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 15px;
+        margin-top: 22px;
+    }
+
+    .stat-box {
+        padding: 17px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 13px;
+    }
+
+    .stat-box strong {
+        display: block;
+        font-size: 24px;
+        margin-bottom: 6px;
+    }
+
+    .stat-box span {
+        color: var(--secondary);
+        font-size: 13px;
+    }
+
+    .section-heading {
+        margin: 0 0 22px;
+        font-size: 23px;
+    }
+
+    .section-description {
+        color: var(--secondary);
+        line-height: 1.7;
+        margin-top: -10px;
+        margin-bottom: 22px;
+    }
+
+    .skill-list {
+        display: grid;
+        gap: 16px;
+    }
+
+    .skill-item {
+        padding: 17px;
+        border-radius: 13px;
+        border: 1px solid var(--border);
+        background: var(--bg);
+    }
+
+    .skill-top {
+        display: flex;
+        justify-content: space-between;
+        gap: 15px;
+        margin-bottom: 12px;
+        align-items: center;
+    }
+
+    .skill-name {
+        font-weight: 700;
+    }
+
+    .skill-percentage {
+        color: var(--accent);
+        font-weight: 700;
+    }
+
+    .progress-track {
+        width: 100%;
+        height: 8px;
+        background: var(--border);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(
+            90deg,
+            var(--primary),
+            var(--accent)
+        );
+        border-radius: 20px;
+    }
+
+    .skill-badge {
+        display: inline-block;
+        font-size: 11px;
+        padding: 5px 9px;
+        border-radius: 20px;
+        margin-top: 10px;
+        font-weight: 700;
+    }
+
+    .badge-strong {
+        color: var(--success);
+        background: rgba(52, 211, 153, 0.12);
+    }
+
+    .badge-improve {
+        color: var(--warning);
+        background: rgba(251, 191, 36, 0.12);
+    }
+
+    .badge-moderate {
+        color: var(--accent);
+        background: rgba(167, 139, 250, 0.12);
+    }
+
+    .empty-state {
+        color: var(--secondary);
+        background: var(--bg);
+        border: 1px dashed var(--border);
+        border-radius: 12px;
+        padding: 22px;
+        text-align: center;
+        line-height: 1.7;
+    }
+
+    /* Skill Gap Analysis */
+    .skill-gap-card {
+        display: grid;
+        grid-template-columns: 1fr 190px;
+        gap: 30px;
+        align-items: center;
+        border-color: rgba(139, 92, 246, 0.55);
+        background:
+            radial-gradient(
+                circle at top right,
+                rgba(139, 92, 246, 0.15),
+                transparent 45%
+            ),
+            var(--card);
+    }
+
+    .section-label {
+        color: var(--accent);
+        font-size: 12px;
+        font-weight: 800;
+        letter-spacing: 1.5px;
+    }
+
+    .skill-gap-content h2 {
+        font-size: 27px;
+        margin: 14px 0;
+    }
+
+    .skill-gap-content p {
+        color: var(--secondary);
+        line-height: 1.8;
+        margin-bottom: 22px;
+    }
+
+    .gap-circle {
+        width: 155px;
+        height: 155px;
+        border-radius: 50%;
+        border: 8px solid var(--primary);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: auto;
+        background: rgba(139, 92, 246, 0.08);
+    }
+
+    .gap-circle strong {
+        font-size: 32px;
+    }
+
+    .gap-circle span {
+        font-size: 12px;
+        color: var(--secondary);
+    }
+
+    .result-action-link,
+    .action-button {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        padding: 13px 19px;
+        border-radius: 10px;
+        font-size: 14px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: 0.2s ease;
+        cursor: pointer;
+    }
+
+    .result-action-link,
+    .action-primary {
+        color: white;
+        background: var(--primary);
+        border: 1px solid var(--primary);
+    }
+
+    .result-action-link:hover,
+    .action-primary:hover {
+        background: #7C3AED;
+        border-color: #7C3AED;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .action-secondary {
+        color: var(--text);
+        background: transparent;
+        border: 1px solid var(--border);
+    }
+
+    .action-secondary:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+    }
+
+    .next-steps-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 17px;
+    }
+
+    .next-step-card {
+        padding: 21px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+    }
+
+    .step-number {
+        display: inline-flex;
+        width: 36px;
+        height: 36px;
+        align-items: center;
+        justify-content: center;
+        background: rgba(139, 92, 246, 0.16);
+        color: var(--accent);
+        border-radius: 10px;
+        font-weight: 800;
+        margin-bottom: 14px;
+    }
+
+    .next-step-card h3 {
+        font-size: 16px;
+        margin: 0 0 10px;
+    }
+
+    .next-step-card p {
+        color: var(--secondary);
+        font-size: 13px;
+        line-height: 1.7;
+        margin: 0;
+    }
+
+    .bottom-actions {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 13px;
+        margin-top: 30px;
+    }
+
+    @media (max-width: 760px) {
+        .score-layout,
+        .skill-gap-card {
+            grid-template-columns: 1fr;
+            text-align: center;
+        }
+
+        .stat-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .next-steps-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .result-card,
+        .results-section-card,
+        .skill-gap-card {
+            padding: 20px;
+        }
+    }
+</style>
 
 <div class="results-page">
-
-    <!-- Header -->
     <div class="results-container">
 
-        <div class="results-header">
-
-            <div>
-                <span class="results-label">
-                    ASSESSMENT RESULTS
-                </span>
-
-                <h1>
-                    Assessment Completed 🎉
-                </h1>
-
-                <p>
-                    Here is your performance summary for
-                    <strong>{{ attempt.assessment.title }}</strong>.
-                </p>
-            </div>
-
-        </div>
-
+        <!-- Page Header -->
+        <header class="results-header">
+            <span class="results-label">CAREERPILOT ASSESSMENT</span>
+            <h1>Assessment Results</h1>
+            <p>
+                Your assessment is complete. Review your performance
+                and discover what to learn next.
+            </p>
+        </header>
 
         <!-- Overall Score -->
-        <div class="overall-result-card">
+        <section class="result-card">
+            <div class="score-layout">
 
-            <div class="overall-score-section">
-
-                <span class="result-card-label">
-                    OVERALL SCORE
-                </span>
-
-                <div class="overall-score">
-                    {{ score|floatformat:0 }}%
+                <div class="score-circle">
+                    <strong>{{ score|default:0|floatformat:0 }}%</strong>
+                    <span>Overall Score</span>
                 </div>
 
-                <p>
-                    Keep learning and improving your skills.
-                </p>
+                <div class="score-details">
+                    <h2>Your Performance Overview</h2>
+                    <p>
+                        Review your results to understand your current
+                        knowledge and identify areas for improvement.
+                        Use your skill gap analysis to plan your next steps.
+                    </p>
 
-            </div>
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <strong>{{ total_questions|default:0 }}</strong>
+                            <span>Total Questions</span>
+                        </div>
 
+                        <div class="stat-box">
+                            <strong>{{ correct_answers|default:0 }}</strong>
+                            <span>Correct Answers</span>
+                        </div>
 
-            <div class="overall-stats">
-
-                <div class="result-stat">
-
-                    <span>
-                        Questions
-                    </span>
-
-                    <strong>
-                        {{ total_questions }}
-                    </strong>
-
-                </div>
-
-
-                <div class="result-stat">
-
-                    <span>
-                        Correct Answers
-                    </span>
-
-                    <strong>
-                        {{ correct_answers }}
-                    </strong>
-
-                </div>
-
-
-                <div class="result-stat">
-
-                    <span>
-                        Assessment
-                    </span>
-
-                    <strong>
-                        Completed
-                    </strong>
-
+                        <div class="stat-box">
+                            <strong>{{ skill_results|length }}</strong>
+                            <span>Skills Evaluated</span>
+                        </div>
+                    </div>
                 </div>
 
             </div>
+        </section>
 
-        </div>
+        <!-- Skill-wise Performance -->
+        <section class="results-section-card">
+            <h2 class="section-heading">Skill-wise Performance</h2>
+            <p class="section-description">
+                See how you performed across the skills covered by this assessment.
+            </p>
 
-
-        <!-- Skill Performance -->
-        <section class="results-section">
-
-            <div class="section-heading">
-
-                <div>
-                    <span class="section-label">
-                        PERFORMANCE
-                    </span>
-
-                    <h2>
-                        Skill-wise Performance
-                    </h2>
-                </div>
-
-                <p>
-                    See how you performed across the skills tested.
-                </p>
-
-            </div>
-
-
-            <div class="skill-results-grid">
-
-                {% for result in skill_results %}
-
-                    <div class="result-skill-card">
-
-                        <div class="result-skill-top">
-
-                            <div>
-
-                                <h3>
+            {% if skill_results %}
+                <div class="skill-list">
+                    {% for result in skill_results %}
+                        <div class="skill-item">
+                            <div class="skill-top">
+                                <span class="skill-name">
                                     {{ result.skill.name }}
-                                </h3>
-
-                                <span class="skill-attempted">
-                                    {{ result.questions_correct }}
-                                    /
-                                    {{ result.questions_attempted }}
-                                    correct
                                 </span>
-
-                            </div>
-
-
-                            <div class="skill-score">
-
-                                <strong>
+                                <span class="skill-percentage">
                                     {{ result.score|floatformat:0 }}%
-                                </strong>
-
-                                <span>
-                                    {{ result.proficiency_level.name }}
                                 </span>
-
                             </div>
 
-                        </div>
-
-
-                        <div class="result-progress">
-
-                           <div
-                                class="result-progress-fill"
-                                data-score="{{ result.score }}"
-                             ></div> 
-
-                        </div>
-
-
-                        <div class="skill-result-description">
+                            <div class="progress-track">
+                                <div
+                                    class="progress-fill"
+                                    style="width: {{ result.score|default:0 }}%;"
+                                ></div>
+                            </div>
 
                             {% if result.score >= 70 %}
-
-                                <span class="result-status strong-status">
-                                    Strong performance
+                                <span class="skill-badge badge-strong">
+                                    Strong
                                 </span>
-
-                            {% elif result.score >= 50 %}
-
-                                <span class="result-status medium-status">
-                                    Needs more practice
+                            {% elif result.score >= 40 %}
+                                <span class="skill-badge badge-moderate">
+                                    Moderate
                                 </span>
-
                             {% else %}
-
-                                <span class="result-status weak-status">
-                                    Needs improvement
+                                <span class="skill-badge badge-improve">
+                                    Needs Improvement
                                 </span>
-
                             {% endif %}
-
                         </div>
-
-                    </div>
-
-                {% empty %}
-
-                    <div class="empty-results">
-
-                        <p>
-                            No skill results are available yet.
-                        </p>
-
-                    </div>
-
-                {% endfor %}
-
-            </div>
-
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    No skill-wise results are available yet.
+                    Complete an assessment with skill-mapped questions
+                    to see your performance here.
+                </div>
+            {% endif %}
         </section>
 
+        <!-- Strong Skills -->
+        <section class="results-section-card">
+            <h2 class="section-heading">Your Strong Skills</h2>
+            <p class="section-description">
+                Skills where your assessment performance was strongest.
+            </p>
 
-        <!-- Strengths and Improvement -->
-        <section class="results-section">
-
-            <div class="strength-improvement-grid">
-
-
-                <!-- Strong Skills -->
-
-                <div class="insight-card">
-
-                    <div class="insight-icon">
-                        ✓
-                    </div>
-
-                    <div class="insight-content">
-
-                        <span class="section-label">
-                            YOUR STRENGTHS
-                        </span>
-
-                        <h2>
-                            Strong Skills
-                        </h2>
-
-                        {% if strong_skills %}
-
-                            <div class="insight-list">
-
-                                {% for result in strong_skills %}
-
-                                    <div class="insight-item">
-
-                                        <div>
-                                            <strong>
-                                                {{ result.skill.name }}
-                                            </strong>
-
-                                            <span>
-                                                {{ result.proficiency_level.name }}
-                                            </span>
-                                        </div>
-
-                                        <strong>
-                                            {{ result.score|floatformat:0 }}%
-                                        </strong>
-
-                                    </div>
-
-                                {% endfor %}
-
-                            </div>
-
-                        {% else %}
-
-                            <p class="insight-empty">
-                                Keep practicing to build strong skills.
-                            </p>
-
-                        {% endif %}
-
-                    </div>
-
+            {% if strong_skills %}
+                <div class="skill-list">
+                    {% for skill in strong_skills %}
+                        <div class="skill-item">
+                            <span class="skill-name">{{ skill }}</span>
+                            <span class="skill-badge badge-strong">
+                                Strong
+                            </span>
+                        </div>
+                    {% endfor %}
                 </div>
-
-
-                <!-- Improvement Skills -->
-
-                <div class="insight-card">
-
-                    <div class="insight-icon improvement-icon">
-                        ↑
-                    </div>
-
-                    <div class="insight-content">
-
-                        <span class="section-label">
-                            FOCUS AREA
-                        </span>
-
-                        <h2>
-                            Skills to Improve
-                        </h2>
-
-                        {% if improvement_skills %}
-
-                            <div class="insight-list">
-
-                                {% for result in improvement_skills %}
-
-                                    <div class="insight-item">
-
-                                        <div>
-                                            <strong>
-                                                {{ result.skill.name }}
-                                            </strong>
-
-                                            <span>
-                                                {{ result.proficiency_level.name }}
-                                            </span>
-                                        </div>
-
-                                        <strong>
-                                            {{ result.score|floatformat:0 }}%
-                                        </strong>
-
-                                    </div>
-
-                                {% endfor %}
-
-                            </div>
-
-                        {% else %}
-
-                            <p class="insight-empty">
-                                Excellent! No immediate improvement areas.
-                            </p>
-
-                        {% endif %}
-
-                    </div>
-
+            {% else %}
+                <div class="empty-state">
+                    Keep practicing and retake the assessment to identify
+                    the skills in which you perform most confidently.
                 </div>
-
-            </div>
-
+            {% endif %}
         </section>
 
+        <!-- Skills to Improve -->
+        <section class="results-section-card">
+            <h2 class="section-heading">Skills to Improve</h2>
+            <p class="section-description">
+                Focus on these areas to strengthen your readiness for your target career.
+            </p>
 
-        <!-- Skill Gap -->
-        <section class="results-section">
-
-            <div class="skill-gap-card">
-
-                <div class="skill-gap-content">
-
-                    <span class="section-label">
-                        SKILL GAP ANALYSIS
-                    </span>
-
-                    <h2>
-                        Understand What to Learn Next
-                    </h2>
-
-                    <p>
-                        Your assessment results can help identify the
-                        skills that need more practice and guide your
-                        personalized learning journey.
-                    </p>
-
+            {% if improvement_skills %}
+                <div class="skill-list">
+                    {% for skill in improvement_skills %}
+                        <div class="skill-item">
+                            <span class="skill-name">{{ skill }}</span>
+                            <span class="skill-badge badge-improve">
+                                Focus Area
+                            </span>
+                        </div>
+                    {% endfor %}
                 </div>
-
-
-                <div class="skill-gap-visual">
-
-                    <div class="gap-circle">
-
-                        <strong>
-                            {{ score|floatformat:0 }}%
-                        </strong>
-
-                        <span>
-                            Current Level
-                        </span>
-
-                    </div>
-
+            {% else %}
+                <div class="empty-state">
+                    No specific improvement areas were identified.
+                    Review your detailed skill gap analysis for more guidance.
                 </div>
-
-            </div>
-
+            {% endif %}
         </section>
 
+        <!-- Skill Gap Analysis -->
+        <section class="skill-gap-card">
+            <div class="skill-gap-content">
+                <span class="section-label">SKILL GAP ANALYSIS</span>
 
-        <!-- Next Steps -->
-        <section class="results-section">
+                <h2>Understand What to Learn Next</h2>
 
-            <div class="section-heading">
+                <p>
+                    Your assessment results help identify your current
+                    strengths and the skills you need to improve.
+                    Explore your detailed skill gap analysis to understand
+                    your progress toward your chosen career.
+                </p>
 
-                <div>
-                    <span class="section-label">
-                        NEXT STEP
-                    </span>
-
-                    <h2>
-                        Continue Your Career Journey
-                    </h2>
-                </div>
-
+                <a
+                    href="{% url 'skill_gap_analysis' career_slug=attempt.assessment.career.slug %}"
+                    class="result-action-link"
+                >
+                    View Skill Gap Analysis &rarr;
+                </a>
             </div>
 
+            <div class="skill-gap-visual">
+                <div class="gap-circle">
+                    <strong>{{ score|default:0|floatformat:0 }}%</strong>
+                    <span>Current Level</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recommended Next Steps -->
+        <section class="results-section-card">
+            <h2 class="section-heading">Recommended Next Steps</h2>
+            <p class="section-description">
+                Turn your assessment results into a practical learning plan.
+            </p>
 
             <div class="next-steps-grid">
-
                 <div class="next-step-card">
-
-                    <div class="next-step-number">
-                        01
-                    </div>
-
-                    <h3>
-                        Personalized Learning Path
-                    </h3>
-
+                    <span class="step-number">01</span>
+                    <h3>Analyze Your Skill Gaps</h3>
                     <p>
-                        Follow a learning path based on your assessment
-                        performance and skill gaps.
+                        Review your skill levels and prioritize the topics
+                        that need more practice.
                     </p>
-
-                    <a href="#" class="result-action-link">
-                        View Learning Path →
-                    </a>
-
                 </div>
 
-
                 <div class="next-step-card">
-
-                    <div class="next-step-number">
-                        02
-                    </div>
-
-                    <h3>
-                        Practice Your Skills
-                    </h3>
-
+                    <span class="step-number">02</span>
+                    <h3>Follow Your Learning Roadmap</h3>
                     <p>
-                        Strengthen your weaker areas with targeted
-                        lessons, practice questions, and quizzes.
+                        Study the recommended topics in sequence and
+                        practice each concept.
                     </p>
-
-                    <a href="#" class="result-action-link">
-                        Start Practicing →
-                    </a>
-
                 </div>
 
-
                 <div class="next-step-card">
-
-                    <div class="next-step-number">
-                        03
-                    </div>
-
-                    <h3>
-                        AI Career Guidance
-                    </h3>
-
+                    <span class="step-number">03</span>
+                    <h3>Practice and Reassess</h3>
                     <p>
-                        Get personalized guidance and recommendations
-                        based on your career goals and performance.
+                        Complete quizzes, revise weak areas, and take
+                        another assessment to track improvement.
                     </p>
-
-                    <a href="#" class="result-action-link">
-                        Explore Guidance →
-                    </a>
-
                 </div>
-
             </div>
-
         </section>
 
-
         <!-- Bottom Actions -->
-        <div class="results-actions">
+        <div class="bottom-actions">
+            <a
+                href="{% url 'skill_gap_analysis' career_slug=attempt.assessment.career.slug %}"
+                class="action-button action-primary"
+            >
+                View Skill Gap Analysis
+            </a>
 
             <a
                 href="{% url 'career_list' %}"
-                class="secondary-result-btn"
+                class="action-button action-secondary"
             >
                 Explore Careers
             </a>
 
             <a
                 href="{% url 'home' %}"
-                class="primary-result-btn"
+                class="action-button action-secondary"
             >
                 Back to Home
-                <span>→</span>
             </a>
-
         </div>
 
     </div>
-
 </div>
-
-<script src="{% static 'js/assessment_results.js' %}"></script>
-
 {% endblock %}

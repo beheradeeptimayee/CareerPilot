@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'assessments',
     'roadmaps',
     'quizzes',
+    'progress',
 ]
 
 MIDDLEWARE = [

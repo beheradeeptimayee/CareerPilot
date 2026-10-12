@@ -1,0 +1,703 @@
+{% extends 'base.html' %}
+
+{% block title %}Progress Dashboard | CareerPilot{% endblock %}
+
+{% block content %}
+<style>
+.progress-page {
+    min-height: 100vh;
+    padding: 32px 20px 60px;
+    background: #0F172A;
+    color: #F8FAFC;
+}
+.progress-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+.progress-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 38px;
+    margin-bottom: 28px;
+    border: 1px solid #334155;
+    border-radius: 24px;
+    background: linear-gradient(135deg, #111827, #1E293B);
+}
+.hero-content { flex: 1; }
+.hero-label {
+    display: inline-flex;
+    padding: 7px 13px;
+    margin-bottom: 16px;
+    border-radius: 20px;
+    background: rgba(139,92,246,.14);
+    color: #A78BFA;
+    font-size: 13px;
+    font-weight: 600;
+}
+.progress-hero h1 {
+    margin: 0 0 10px;
+    font-size: 34px;
+}
+.hero-description {
+    max-width: 650px;
+    margin: 0 0 24px;
+    color: #CBD5E1;
+    font-size: 15px;
+    line-height: 1.7;
+}
+.career-selector {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 11px 16px;
+    border: 1px solid #334155;
+    border-radius: 12px;
+    background: #0F172A;
+    font-size: 14px;
+}
+.career-selector span { color: #94A3B8; }
+.hero-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 210px;
+    height: 210px;
+    flex-shrink: 0;
+}
+.hero-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 170px;
+    height: 170px;
+    border: 2px solid rgba(167,139,250,.45);
+    border-radius: 50%;
+    background: rgba(139,92,246,.12);
+    box-shadow: 0 0 50px rgba(139,92,246,.25);
+    font-size: 54px;
+}
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(5,minmax(0,1fr));
+    gap: 18px;
+    margin-bottom: 30px;
+}
+.kpi-card {
+    min-width: 0;
+    padding: 22px;
+    border: 1px solid #334155;
+    border-radius: 18px;
+    background: #1E293B;
+    transition: transform .25s ease,border-color .25s ease;
+}
+.kpi-card:hover {
+    transform: translateY(-3px);
+    border-color: #8B5CF6;
+}
+.kpi-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin-bottom: 18px;
+    border-radius: 11px;
+    background: rgba(139,92,246,.15);
+}
+.kpi-label {
+    color: #94A3B8;
+    font-size: 13px;
+}
+.kpi-value {
+    margin-top: 5px;
+    font-size: 27px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+.kpi-subtitle {
+    margin-top: 5px;
+    color: #94A3B8;
+    font-size: 12px;
+}
+.dashboard-section { margin-bottom: 30px; }
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 16px;
+}
+.section-title {
+    margin: 0;
+    font-size: 21px;
+}
+.section-subtitle {
+    margin-top: 5px;
+    color: #94A3B8;
+    font-size: 13px;
+    line-height: 1.6;
+}
+.skills-card,.journey-card,.activity-card {
+    padding: 26px;
+    border: 1px solid #334155;
+    border-radius: 20px;
+    background: #1E293B;
+}
+.skill-row { margin-bottom: 24px; }
+.skill-row:last-child { margin-bottom: 0; }
+.skill-info {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+    margin-bottom: 9px;
+}
+.skill-name {
+    font-size: 14px;
+    font-weight: 600;
+}
+.skill-score {
+    color: #A78BFA;
+    font-size: 13px;
+    font-weight: 600;
+}
+.skill-bar {
+    height: 8px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: #0F172A;
+}
+.skill-fill {
+    width: var(--progress,0%);
+    max-width: 100%;
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg,#8B5CF6,#A78BFA);
+}
+.continue-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 25px;
+    padding: 26px;
+    border: 1px solid #334155;
+    border-radius: 20px;
+    background: linear-gradient(135deg,rgba(139,92,246,.11),#1E293B);
+}
+.continue-left {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    min-width: 0;
+}
+.module-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    flex-shrink: 0;
+    border-radius: 15px;
+    background: rgba(139,92,246,.16);
+    font-size: 25px;
+}
+.module-label {
+    margin-bottom: 5px;
+    color: #A78BFA;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+.module-title {
+    margin: 0 0 5px;
+    font-size: 18px;
+    overflow-wrap: anywhere;
+}
+.module-meta {
+    color: #94A3B8;
+    font-size: 13px;
+    line-height: 1.6;
+}
+.continue-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 19px;
+    border: 0;
+    border-radius: 11px;
+    background: #8B5CF6;
+    color: #fff;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background .2s ease;
+    flex-shrink: 0;
+}
+.continue-btn:hover {
+    background: #7C3AED;
+    color: #fff;
+}
+.journey { max-width: 900px; margin: 0 auto; }
+.journey-item {
+    position: relative;
+    display: flex;
+    gap: 20px;
+    min-height: 78px;
+}
+.journey-line {
+    position: absolute;
+    top: 34px;
+    left: 15px;
+    width: 2px;
+    height: 58px;
+    background: #334155;
+}
+.journey-item.completed .journey-line { background: #8B5CF6; }
+.journey-dot {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+    border: 2px solid #475569;
+    border-radius: 50%;
+    background: #0F172A;
+    color: #64748B;
+    font-size: 13px;
+}
+.journey-item.completed .journey-dot {
+    border-color: #8B5CF6;
+    background: #8B5CF6;
+    color: #fff;
+}
+.journey-item.active .journey-dot {
+    border-color: #A78BFA;
+    background: #312E81;
+    color: #A78BFA;
+    box-shadow: 0 0 20px rgba(139,92,246,.5);
+}
+.journey-content { padding: 3px 0 22px; }
+.journey-title {
+    margin: 0 0 4px;
+    font-size: 15px;
+}
+.journey-status {
+    color: #94A3B8;
+    font-size: 12px;
+}
+.journey-item.completed .journey-status { color: #A78BFA; }
+.journey-item.active .journey-status { color: #C4B5FD; }
+.activity-grid {
+    display: grid;
+    grid-template-columns: minmax(0,1.5fr) minmax(0,1fr);
+    gap: 20px;
+}
+.activity-list,.upcoming-list {
+    display: flex;
+    flex-direction: column;
+}
+.activity-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 0;
+    border-bottom: 1px solid #334155;
+}
+.activity-item:first-child { padding-top: 0; }
+.activity-item:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.activity-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    background: rgba(139,92,246,.14);
+}
+.activity-info { flex: 1; min-width: 0; }
+.activity-title {
+    margin: 0 0 4px;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+.activity-description {
+    margin: 0;
+    color: #94A3B8;
+    font-size: 12px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+}
+.activity-time {
+    color: #94A3B8;
+    font-size: 11px;
+    white-space: nowrap;
+}
+.upcoming-list { gap: 12px; }
+.upcoming-item {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 14px;
+    border: 1px solid #334155;
+    border-radius: 13px;
+    background: #111827;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color .2s ease,transform .2s ease;
+}
+.upcoming-item:hover {
+    border-color: #8B5CF6;
+    transform: translateX(3px);
+}
+.upcoming-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    border-radius: 9px;
+    background: rgba(139,92,246,.12);
+    color: #A78BFA;
+    font-size: 12px;
+    font-weight: 700;
+}
+.upcoming-title {
+    margin: 0 0 3px;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+.upcoming-meta {
+    color: #94A3B8;
+    font-size: 11px;
+    line-height: 1.5;
+}
+.empty-state {
+    margin: 0;
+    color: #94A3B8;
+    font-size: 13px;
+    line-height: 1.7;
+}
+@media (max-width:1100px) {
+    .kpi-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .activity-grid { grid-template-columns: 1fr; }
+}
+@media (max-width:800px) {
+    .progress-hero { padding: 28px; }
+    .hero-visual { display: none; }
+    .kpi-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+    .continue-card {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .continue-btn { width: 100%; }
+}
+@media (max-width:550px) {
+    .progress-page { padding: 20px 12px 40px; }
+    .progress-hero { padding: 23px; border-radius: 18px; }
+    .progress-hero h1 { font-size: 27px; }
+    .kpi-grid { grid-template-columns: 1fr; gap: 12px; }
+    .kpi-card { padding: 18px; }
+    .skills-card,.journey-card,.activity-card,.continue-card { padding: 20px; }
+    .continue-left { align-items: flex-start; }
+    .journey-item { gap: 14px; }
+    .activity-item { gap: 10px; }
+    .activity-time { font-size: 10px; }
+}
+</style>
+
+<div class="progress-page">
+    <div class="progress-container">
+
+        <!-- Hero -->
+        <section class="progress-hero">
+            <div class="hero-content">
+                <div class="hero-label">🚀 Your Learning Dashboard</div>
+                <h1>Hi {{ request.user.first_name|default:request.user.username }}!</h1>
+                <p class="hero-description">
+                    Keep building your skills and move closer to your career goal.
+                    Track your learning journey, complete modules and become career ready.
+                </p>
+                <div class="career-selector">
+                    <span>Career Path:</span>
+                    <strong>{{ career.name }}</strong>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-circle">🎓</div>
+            </div>
+        </section>
+
+        <!-- Summary cards -->
+        <section class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-icon">📈</div>
+                <div class="kpi-label">Overall Progress</div>
+                <div class="kpi-value">{{ roadmap.overall_progress|default:"0" }}%</div>
+                <div class="kpi-subtitle">Keep moving forward</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon">📚</div>
+                <div class="kpi-label">Modules</div>
+                <div class="kpi-value">{{ completed_modules }}/{{ total_modules }}</div>
+                <div class="kpi-subtitle">Modules completed</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon">📝</div>
+                <div class="kpi-label">Quizzes</div>
+                <div class="kpi-value">{{ quizzes_passed|default:0 }}</div>
+                <div class="kpi-subtitle">Quizzes passed</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon">🎯</div>
+                <div class="kpi-label">Skills</div>
+                <div class="kpi-value">{{ completed_skills }}/{{ total_skills }}</div>
+                <div class="kpi-subtitle">Skills completed</div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon">🔥</div>
+                <div class="kpi-label">Learning Streak</div>
+                <div class="kpi-value">Keep going</div>
+                <div class="kpi-subtitle">Build a consistent learning habit</div>
+            </div>
+        </section>
+
+        <!-- Skill Progress -->
+        <section class="dashboard-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Skill Progress</h2>
+                    <div class="section-subtitle">
+                        Track your progress across the skills required for {{ career.name }}.
+                    </div>
+                </div>
+            </div>
+
+            <div class="skills-card">
+                {% for roadmap_skill in skill_progress %}
+                    <div class="skill-row">
+                        <div class="skill-info">
+                            <span class="skill-name">{{ roadmap_skill.skill.name }}</span>
+                            <span class="skill-score">{{ roadmap_skill.progress|floatformat:0 }}%</span>
+                        </div>
+                        <div class="skill-bar">
+                            <div class="skill-fill"
+                                 style="--progress: {{ roadmap_skill.progress }}%;"></div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="empty-state">No skill progress available yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- Continue Learning -->
+        <section class="dashboard-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Continue Learning</h2>
+                    <div class="section-subtitle">Pick up where you left off.</div>
+                </div>
+            </div>
+
+            <div class="continue-card">
+                <div class="continue-left">
+                    <div class="module-icon">📘</div>
+                    <div>
+                        <div class="module-label">Recommended Next</div>
+                        {% if next_module %}
+                            <h3 class="module-title">{{ next_module.module.title }}</h3>
+                            <div class="module-meta">
+                                {{ next_module.module.roadmap_skill.skill.name }}
+                                · {{ next_module.module.difficulty|title }}
+                                · {{ next_module.module.estimated_minutes }} min
+                            </div>
+                        {% else %}
+                            <h3 class="module-title">All modules completed</h3>
+                            <div class="module-meta">
+                                Great work! Check your roadmap for your next goal.
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                {% if next_module %}
+                    <a href="{% url 'module_learning' career.slug next_module.module.roadmap_skill.skill.id next_module.module.id %}"
+                       class="continue-btn">
+                        Continue Learning →
+                    </a>
+                {% else %}
+                    <a href="{% url 'roadmap_dashboard' career.slug %}" class="continue-btn">
+                        View Roadmap →
+                    </a>
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- Learning Journey -->
+        <section class="dashboard-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Your Learning Journey</h2>
+                    <div class="section-subtitle">
+                        Follow your journey from assessment to career readiness.
+                    </div>
+                </div>
+            </div>
+
+            <div class="journey-card">
+                <div class="journey">
+                    <div class="journey-item completed">
+                        <div class="journey-dot">✓</div>
+                        <div class="journey-line"></div>
+                        <div class="journey-content">
+                            <h3 class="journey-title">Career Assessment</h3>
+                            <div class="journey-status">Completed</div>
+                        </div>
+                    </div>
+
+                    <div class="journey-item completed">
+                        <div class="journey-dot">✓</div>
+                        <div class="journey-line"></div>
+                        <div class="journey-content">
+                            <h3 class="journey-title">Skill Gap Analysis</h3>
+                            <div class="journey-status">Completed</div>
+                        </div>
+                    </div>
+
+                    <div class="journey-item active">
+                        <div class="journey-dot">●</div>
+                        <div class="journey-line"></div>
+                        <div class="journey-content">
+                            <h3 class="journey-title">Personalized Roadmap</h3>
+                            <div class="journey-status">In Progress</div>
+                        </div>
+                    </div>
+
+                    <div class="journey-item">
+                        <div class="journey-dot">○</div>
+                        <div class="journey-line"></div>
+                        <div class="journey-content">
+                            <h3 class="journey-title">Learning Modules</h3>
+                            <div class="journey-status">Continue learning to progress</div>
+                        </div>
+                    </div>
+
+                    <div class="journey-item">
+                        <div class="journey-dot">○</div>
+                        <div class="journey-content">
+                            <h3 class="journey-title">Career Ready</h3>
+                            <div class="journey-status">Future milestone</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recent Activity and Upcoming Modules -->
+        <section class="dashboard-section">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Recent Activity</h2>
+                    <div class="section-subtitle">
+                        See what you've accomplished recently.
+                    </div>
+                </div>
+            </div>
+
+            <div class="activity-grid">
+                <div class="activity-card">
+                    <div class="activity-list">
+                        {% for item in recent_modules %}
+                            <div class="activity-item">
+                                <div class="activity-icon">📚</div>
+                                <div class="activity-info">
+                                    <h3 class="activity-title">{{ item.module.title }} Completed</h3>
+                                    <p class="activity-description">
+                                        {{ item.module.roadmap_skill.skill.name }} learning module completed.
+                                    </p>
+                                </div>
+                                <div class="activity-time">
+                                    {{ item.completed_at|date:"d M" }}
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        {% for attempt in recent_quizzes %}
+                            <div class="activity-item">
+                                <div class="activity-icon">📝</div>
+                                <div class="activity-info">
+                                    <h3 class="activity-title">{{ attempt.quiz.title }} Completed</h3>
+                                    <p class="activity-description">
+                                        Quiz score: {{ attempt.score|floatformat:0 }}%.
+                                    </p>
+                                </div>
+                                <div class="activity-time">
+                                    {{ attempt.completed_at|date:"d M" }}
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        {% if not recent_modules and not recent_quizzes %}
+                            <p class="empty-state">
+                                Your learning activity will appear here as you complete modules and quizzes.
+                            </p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Upcoming Modules -->
+                <div class="activity-card">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title" style="font-size:18px;">
+                                Upcoming Modules
+                            </h3>
+                            <div class="section-subtitle">
+                                Continue building your skills.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="upcoming-list">
+                        {% for item in upcoming_modules %}
+                            <a class="upcoming-item"
+                               href="{% url 'module_learning' career.slug item.module.roadmap_skill.skill.id item.module.id %}">
+                                <div class="upcoming-number">
+                                    {{ forloop.counter|stringformat:"02d" }}
+                                </div>
+                                <div>
+                                    <h3 class="upcoming-title">{{ item.module.title }}</h3>
+                                    <div class="upcoming-meta">
+                                        {{ item.module.roadmap_skill.skill.name }}
+                                        · {{ item.module.difficulty|title }}
+                                        · {{ item.module.estimated_minutes }} min
+                                    </div>
+                                </div>
+                            </a>
+                        {% empty %}
+                            <p class="empty-state">
+                                No upcoming modules found for this roadmap.
+                            </p>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}

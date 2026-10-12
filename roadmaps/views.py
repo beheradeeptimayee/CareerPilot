@@ -3,7 +3,7 @@ from django.utils import timezone
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 from assessments.models import AssessmentAttempt, SkillResult
-from careers.models import Career, CareerSkill
+from careers.models import Career, CareerSkill,Skill
 from roadmaps.models import LearningRoadmap,LearningModule,RoadmapSkill,UserModuleProgress
 from decimal import Decimal
 
@@ -330,4 +330,42 @@ def module_learning(request, career_slug, skill_id, module_id):
             'module': module,
             'progress': progress,
         }
+    )
+
+
+@login_required
+def ai_learning_planner(request):
+    careers = Career.objects.filter(
+        is_active=True
+    ).order_by("name")
+
+    skills = Skill.objects.filter(
+        is_active=True
+    ).order_by("name")
+
+    default_career = (
+        careers.filter(
+            slug="full-stack-developer"
+        ).first()
+        or careers.first()
+    )
+
+    default_skill = (
+        skills.filter(
+            name__iexact="React"
+        ).first()
+        or skills.first()
+    )
+
+    context = {
+        "careers": careers,
+        "skills": skills,
+        "default_career": default_career,
+        "default_skill": default_skill,
+    }
+
+    return render(
+        request,
+        "roadmaps/ai_learning_planner.html",
+        context,
     )
